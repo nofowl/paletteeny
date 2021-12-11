@@ -1,5 +1,5 @@
 import React, {useRef, useEffect} from "react";
-import Palette from "./Palette";
+import Palette from "./Palette/Palette";
 
 interface Props {
     palette: Palette;

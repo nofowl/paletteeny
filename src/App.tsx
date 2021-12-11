@@ -1,11 +1,12 @@
 import React from 'react';
 import './App.css';
 import PaletteWindow from './PaletteWindow';
-import Palette from './Palette'
+import { MonochromaticPalette } from './Palette/Palettes';
+import Color, { RandomColor } from './Palette/Color';
 
 function App() {
-  
-  const palette = new Palette();
+
+  const palette = MonochromaticPalette(RandomColor(), 0.8, 0.4);
 
   return (
     <div className="App">

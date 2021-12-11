@@ -20,7 +20,6 @@
 .Palette {
   width: minimum(90vw, 90vh);
   height: minimum(90vw, 90vh);
-  background: white;
-  border: 0px solid none;
+  border: 0px solid transparent;
   border-radius: 2%;
 }
