@@ -1,3 +1,11 @@
+function channelHex(channel : number) : string {
+    let str = Math.round(channel * 255).toString(16);
+    if (str.length < 2) {
+        str = "0" + str;
+    }
+    return str;
+}
+
 class Color {
     r: number;
     g: number;
@@ -25,6 +33,14 @@ class Color {
 
     asArray() : number[] {
         return [this.r, this.g, this.b, this.a]
+    }
+
+    asHex() : string {
+        return (
+            channelHex(this.r) +
+            channelHex(this.g) +
+            channelHex(this.b)
+        )
     }
 
     setHSL(hue: number, sat: number, light: number) {
@@ -101,6 +117,15 @@ export function RandomColor() : Color {
         );
 
     return c;
+}
+
+export function HexColor(hex: string) : Color {
+    var result = /([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? new Color(
+      parseInt(result[1], 16) / 255,
+      parseInt(result[2], 16) / 255,
+      parseInt(result[3], 16) / 255
+    ) : RandomColor();
 }
 
 export default Color;

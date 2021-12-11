@@ -1,4 +1,3 @@
-import { debug } from "console";
 import Color from "./Color";
 import Palette from "./Palette";
 
@@ -26,8 +25,6 @@ function colorFrom(
     hue = randomRange(minHue, maxHue);
     sat = randomRange(minSat, maxSat);
     light = randomRange(minLight, maxLight);
-
-    console.log(hue, sat, light);
 
     c.setHSL(hue, sat, light);
 

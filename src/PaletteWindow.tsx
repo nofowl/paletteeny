@@ -160,7 +160,7 @@ const PaletteWindow = (props: Props) => {
                 void main() {
                     vec4 top = mix(tl, tr, gl_FragCoord.x / 640.0);
                     vec4 bottom = mix(bl, br, gl_FragCoord.x / 640.0);
-                    gl_FragColor = mix(top, bottom, gl_FragCoord.y / 640.0);
+                    gl_FragColor = mix(bottom, top, gl_FragCoord.y / 640.0);
                 }
             `;
 
