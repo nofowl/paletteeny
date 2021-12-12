@@ -196,7 +196,6 @@ const PaletteView = (props: Props) => {
     function saveImage() {
         render();
         let url = canvasRef.current?.toDataURL("image/png");
-        alert(url);
         if (url) {
             var a = document.createElement('a');
             a.href = url;
