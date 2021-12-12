@@ -11,6 +11,7 @@
 
 h1 {
   font-size: 2em;
+  margin: 0;
 }
 
 h2 {
@@ -25,7 +26,7 @@ sup {
 .App a {
   text-decoration: none;
   color: #333333;
-  transition: color 1s;
+  transition: color 0.5s;
 }
 
 .App a:hover {
@@ -42,6 +43,33 @@ sup {
   color: white;
 }
 
+.App-header {
+  margin: 0.5em;
+  width: min(640px, min(90vw, 90vh));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.Export-button {
+  margin-top: auto;
+  width: 3em;
+  height: 3em;
+  border: 0px transparent;
+  border-radius: 100%;
+  padding: 0;
+  background-color: transparent;
+}
+
+.Export-button svg {
+  color: #333333;
+  transition: color 0.5s;
+}
+
+.Export-button:hover svg {
+  color: #666666;
+}
+
 .Palette-window {
   width: min(640px, min(90vw, 90vh));
   height: min(640px, min(90vw, 90vh));
@@ -53,7 +81,6 @@ sup {
   height: 100%;
   border: 0px solid transparent;
   border-radius: 2%;
-  cursor: pointer;
 }
 
 .Palette-buttons {
@@ -67,7 +94,7 @@ sup {
   padding: 8px;
   margin: 8px;
   color: #555555;
-  transition: color 1s;
+  transition: color 0.5s;
 }
 
 .Palette-button:hover {
@@ -82,10 +109,6 @@ sup {
   border-radius: 100%;
   position: absolute;
   cursor: pointer;
-}
-
-.Lock-button#locked {
-  background-color: blue;
 }
 
 .Lock-button#tl {
@@ -111,3 +134,56 @@ sup {
 .RangeControl {
   width: min(320px, min(50vw, 50vh))
 }
+
+.MuiSnackbarContent-message {
+  margin: auto;
+  color: #a4a4a4;
+}
+
+.MuiPaper-root {
+  background-color: #333333;
+}
+
+.Tooltip {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Tooltip-text {
+  visibility: hidden;
+  background-color: #333333;
+  color: #a4a4a4;
+  text-align: center;
+  padding: 5px;
+  border-radius: 6px;
+
+  /* Position the tooltip text */
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+
+  /* Fade in tooltip */
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* Tooltip arrow */
+.Tooltip .Tooltip-text::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #333333 transparent transparent transparent;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.Tooltip:hover .Tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+

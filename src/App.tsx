@@ -1,9 +1,14 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import PaletteView from './PaletteView';
+import { PaletteGL } from './PaletteGL';
 import { Palette, AnalogousPalette, MonochromaticPalette, TetradicPalette } from './Palette/Palettes';
 import { RandomColor, HexColor } from './Palette/Color';
-import { setURL } from './urlHandler';
+import { setURL, shareUrlForPalette } from './urlHandler';
 import { RangeSlider } from './Components/RangeSlider';
+import { ReactComponent as ExportIcon } from './icons/export.svg'
+import { ReactComponent as LinkIcon } from './icons/link.svg'
+import { Snackbar } from '@mui/material';
+import { TooltipButton } from './Components/TooltipButton';
 import './App.css';
 const queryString = require('query-string');
 
@@ -26,6 +31,7 @@ function App() {
     }
   }
 
+  // initialise state
   const [palette, setPaletteState] = useState(urlPalette);
   const [hueRange, setHueRange] = useState([0, 100]);
   const [satRange, setSatRange] = useState([0, 100]);
@@ -33,6 +39,14 @@ function App() {
   const [hueVariance, setHueVariance] = useState(15);
   const [satVariance, setSatVariance] = useState(50);
   const [lightVariance, setLightVariance] = useState(50);
+  const [snackOpen, setSnackOpen] = useState(false);
+  const [snackMessage, setSnackMessage] = useState('');
+
+  // construct the refs for rendering the gl view
+  let canvasRef = useRef<HTMLCanvasElement | null>(null);
+  let canvasContext = useRef<WebGLRenderingContext | null>(null);
+
+  let paletteGL = new PaletteGL(canvasRef, canvasContext, palette);
 
   // ensure initial URL is valid
   setURL(palette);
@@ -54,16 +68,41 @@ function App() {
     setPalette(TetradicPalette(RandomColor(), hueVariance / 100, satVariance / 100, lightVariance / 100));
   }
 
+  const showSnack = (msg : string) => {
+    setSnackMessage(msg);
+    setSnackOpen(true);
+  }
+
+  const hideSnack = () => {
+    setSnackOpen(false);
+  }
+
+  const copyLink = () => {
+    navigator.clipboard.writeText(shareUrlForPalette(palette));
+    showSnack('Link copied to clipboard.');
+  }
+
+  const exportCanvas = () => {
+    paletteGL.saveImage(640, 640);
+  }
+
   return (
     <div className="App">
-      <header>
-        <h1>
-          <a href="/">palet<sup>teeny</sup></a>
-        </h1>
-      </header>
+    <div className="App-header">
+      <TooltipButton className="Export-button Tooltip" tooltip="Share" onClick={copyLink}><LinkIcon/></TooltipButton>
+      <h1><a href="/">palet<sup>teeny</sup></a></h1>
+      <TooltipButton className="Export-button Tooltip" tooltip="Export" onClick={exportCanvas}><ExportIcon/></TooltipButton>
+    </div>
       <div className="App-body">
         <div className="Palette-window">
-          <PaletteView palette={palette}/>
+          <PaletteView palette={palette} paletteGL={paletteGL}/>
+          <Snackbar
+            anchorOrigin={{vertical:'bottom', horizontal:'center'}}
+            open={snackOpen}
+            autoHideDuration={1000}
+            onClose={hideSnack}
+            message={snackMessage}
+          />
         </div>
         <span className="Palette-buttons">
           <button className="Palette-button" onClick={newMonochromatic}>Mono</button>
