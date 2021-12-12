@@ -53,6 +53,7 @@ sup {
   height: 100%;
   border: 0px solid transparent;
   border-radius: 2%;
+  cursor: pointer;
 }
 
 .Palette-buttons {

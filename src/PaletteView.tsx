@@ -1,3 +1,4 @@
+import { palette } from "@mui/system";
 import React, {useRef, useEffect} from "react";
 import {Palette} from './Palette/Palettes'
 
@@ -127,14 +128,14 @@ const PaletteView = (props: Props) => {
         gl.drawArrays(gl.TRIANGLE_STRIP, offset, vertexCount);
     }
 
-    useEffect(() => {
+    function render() {
         if (canvasRef.current)
         {
             let size = 640;
             canvasRef.current.width = size;
             canvasRef.current.height = size;
 
-            canvasContext.current = canvasRef.current.getContext('webgl');
+            canvasContext.current = canvasRef.current.getContext('webgl', {preserveDrawingBuffer: true});
 
             let context = canvasContext.current;
 
@@ -186,9 +187,36 @@ const PaletteView = (props: Props) => {
 
             drawScene(context, programInfo, buffers);
         }
+    }
+
+    useEffect(() => {
+        render();
     });
 
-    return <canvas className="PaletteView" ref={canvasRef}/>
+    function saveImage() {
+        render();
+        let url = canvasRef.current?.toDataURL("image/png");
+        alert(url);
+        if (url) {
+            var a = document.createElement('a');
+            a.href = url;
+            a.download =
+                'teeny-palette_' +
+                props.palette.tl.asHex() +
+                props.palette.tr.asHex() +
+                props.palette.bl.asHex() +
+                props.palette.br.asHex() +
+                '.png';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    }
+
+    return (
+    <>
+    <canvas onClick={saveImage} className="PaletteView" ref={canvasRef}/>
+    </>)
 }
 
 export default PaletteView;
