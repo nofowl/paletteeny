@@ -1,12 +1,12 @@
-import Palette from "./Palette/Palette";
+import {Palette} from "./Palette/Palettes";
 const queryString = require('query-string');
 
 export function setURL(palette: Palette) {
     const url = {
-        tl: palette.colorTL.asHex(),
-        tr: palette.colorTR.asHex(),
-        bl: palette.colorBL.asHex(),
-        br: palette.colorBR.asHex(),
+        tl: palette.tl.asHex(),
+        tr: palette.tr.asHex(),
+        bl: palette.bl.asHex(),
+        br: palette.br.asHex(),
     }
 
     setQueryStringWithoutReload(queryString.stringify(url));
@@ -18,5 +18,5 @@ function setQueryStringWithoutReload(queryValue : string) {
                 window.location.host +
                 window.location.pathname + "?" +
                 queryValue;
-    window.history.replaceState({path: newUrl}, "", newUrl);
+    window.history.replaceState({}, "test url", newUrl);
 }

@@ -1,10 +1,39 @@
 .App {
   text-align: center;
-}
-
-.App-header {
   background-color: #222222;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+}
+
+h1 {
+  font-size: 2em;
+}
+
+h2 {
+  font-size: 0.5em;
+  bottom: 0;
+}
+
+sup {
+  font-size: 0.5em;
+}
+
+.App a {
+  text-decoration: none;
+  color: #333333;
+  transition: color 1s;
+}
+
+.App a:hover {
+  color: #666666;
+}
+
+.App-body {
+  background-color: #222222;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -13,9 +42,71 @@
   color: white;
 }
 
-.Palette {
-  width: minimum(90vw, 90vh);
-  height: minimum(90vw, 90vh);
+.Palette-window {
+  width: min(640px, min(90vw, 90vh));
+  height: min(640px, min(90vw, 90vh));
+  position: relative;
+}
+
+.PaletteView {
+  width: 100%;
+  height: 100%;
   border: 0px solid transparent;
   border-radius: 2%;
+}
+
+.Palette-buttons {
+  padding: 8px;
+}
+
+.Palette-button {
+  background-color: #333333;
+  border: 0px solid transparent;
+  border-radius: 8px;
+  padding: 8px;
+  margin: 8px;
+  color: #555555;
+  transition: color 1s;
+}
+
+.Palette-button:hover {
+  color: #a4a4a4;
+}
+
+.Lock-button {
+  width: 5%;
+  height: 5%;
+  margin: 1%;
+  border: 0px solid transparent;
+  border-radius: 100%;
+  position: absolute;
+  cursor: pointer;
+}
+
+.Lock-button#locked {
+  background-color: blue;
+}
+
+.Lock-button#tl {
+  left: 0;
+  top: 0;
+}
+
+.Lock-button#tr {
+  right: 0;
+  top: 0;
+}
+
+.Lock-button#bl {
+  left: 0;
+  bottom: 0;
+}
+
+.Lock-button#br {
+  right: 0;
+  bottom: 0;
+}
+
+.RangeControl {
+  width: min(320px, min(50vw, 50vh))
 }

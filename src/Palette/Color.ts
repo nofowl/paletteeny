@@ -121,11 +121,15 @@ export function RandomColor() : Color {
 
 export function HexColor(hex: string) : Color {
     var result = /([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? new Color(
-      parseInt(result[1], 16) / 255,
-      parseInt(result[2], 16) / 255,
-      parseInt(result[3], 16) / 255
-    ) : RandomColor();
+    if (result) {
+        let c = new Color(
+            parseInt(result[1], 16) / 255,
+            parseInt(result[2], 16) / 255,
+            parseInt(result[3], 16) / 255
+            );
+        return c;
+    }
+    return RandomColor();
 }
 
 export default Color;

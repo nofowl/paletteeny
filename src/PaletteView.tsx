@@ -1,10 +1,11 @@
 import React, {useRef, useEffect} from "react";
-import Palette from "./Palette/Palette";
+import {Palette} from './Palette/Palettes'
 
 interface Props {
     palette: Palette;
 }
-const PaletteWindow = (props: Props) => {
+
+const PaletteView = (props: Props) => {
 
     let canvasRef = useRef<HTMLCanvasElement | null>(null);
     let canvasContext = useRef<WebGLRenderingContext | null>(null);
@@ -116,10 +117,10 @@ const PaletteWindow = (props: Props) => {
         gl.useProgram(programInfo.program);
 
         // bind uniforms
-        gl.uniform4fv(programInfo.uniformLocations.tlPos, props.palette.colorTL.asArray());
-        gl.uniform4fv(programInfo.uniformLocations.trPos, props.palette.colorTR.asArray());
-        gl.uniform4fv(programInfo.uniformLocations.blPos, props.palette.colorBL.asArray());
-        gl.uniform4fv(programInfo.uniformLocations.brPos, props.palette.colorBR.asArray());
+        gl.uniform4fv(programInfo.uniformLocations.tlPos, props.palette.tl.asArray());
+        gl.uniform4fv(programInfo.uniformLocations.trPos, props.palette.tr.asArray());
+        gl.uniform4fv(programInfo.uniformLocations.blPos, props.palette.bl.asArray());
+        gl.uniform4fv(programInfo.uniformLocations.brPos, props.palette.br.asArray());
 
         const offset = 0;
         const vertexCount = 4;
@@ -187,12 +188,7 @@ const PaletteWindow = (props: Props) => {
         }
     });
 
-    return (
-        <canvas
-            className="Palette"
-            ref={canvasRef}
-        />
-    )
+    return <canvas className="PaletteView" ref={canvasRef}/>
 }
 
-export default PaletteWindow;
+export default PaletteView;
