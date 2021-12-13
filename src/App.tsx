@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import PaletteView from './PaletteView';
 import { PaletteGL } from './PaletteGL';
 import { Palette, AnalogousPalette, MonochromaticPalette, TetradicPalette } from './Palette/Palettes';
@@ -49,7 +49,10 @@ function App() {
   let paletteGL = new PaletteGL(canvasRef, canvasContext, palette);
 
   // ensure initial URL is valid
-  setURL(palette);
+
+  useEffect(() => {
+    setURL(palette);
+  }, [palette]);
 
   const setPalette = (p: Palette) => {
     setPaletteState(p);
