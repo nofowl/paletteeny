@@ -43,10 +43,10 @@ function App() {
   const [snackMessage, setSnackMessage] = useState('');
 
   // construct the refs for rendering the gl view
-  let canvasRef = useRef<HTMLCanvasElement | null>(null);
-  let canvasContext = useRef<WebGLRenderingContext | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const canvasContext = useRef<WebGLRenderingContext | null>(null);
 
-  let paletteGL = new PaletteGL(canvasRef, canvasContext, palette);
+  const paletteGL = new PaletteGL(canvasRef, canvasContext, palette);
 
   // ensure initial URL is valid
 
