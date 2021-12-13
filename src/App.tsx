@@ -13,26 +13,8 @@ import './App.css';
 const queryString = require('query-string');
 
 function App() {
-  // Initialise from a url state
-  let urlPalette = AnalogousPalette(RandomColor(), 0.3, 0.8, 0.5);
-  let parsedURL = queryString.parse(window.location.search);
-  if (parsedURL) {
-    if (parsedURL.tl) {
-      urlPalette.tl = HexColor(parsedURL.tl);
-    }
-    if (parsedURL.tr) {
-      urlPalette.tr = HexColor(parsedURL.tr);
-    }
-    if (parsedURL.bl) {
-      urlPalette.bl = HexColor(parsedURL.bl);
-    }
-    if (parsedURL.br) {
-      urlPalette.br = HexColor(parsedURL.br);
-    }
-  }
-
   // initialise state
-  const [palette, setPaletteState] = useState(urlPalette);
+  const [palette, setPaletteState] = useState(AnalogousPalette(RandomColor(), 0.3, 0.8, 0.5));
   const [hueRange, setHueRange] = useState([0, 100]);
   const [satRange, setSatRange] = useState([0, 100]);
   const [lightRange, setLightRange] = useState([0, 100]);
@@ -42,6 +24,27 @@ function App() {
   const [snackOpen, setSnackOpen] = useState(false);
   const [snackMessage, setSnackMessage] = useState('');
 
+  // Initialise from a url state
+  useEffect(() => {
+    const urlPalette = AnalogousPalette(RandomColor(), 0.3, 0.8, 0.5);
+    let parsedURL = queryString.parse(window.location.search);
+    if (parsedURL) {
+      if (parsedURL.tl) {
+        urlPalette.tl = HexColor(parsedURL.tl);
+      }
+      if (parsedURL.tr) {
+        urlPalette.tr = HexColor(parsedURL.tr);
+      }
+      if (parsedURL.bl) {
+        urlPalette.bl = HexColor(parsedURL.bl);
+      }
+      if (parsedURL.br) {
+        urlPalette.br = HexColor(parsedURL.br);
+      }
+      setPaletteState(urlPalette);
+    }
+  }, []);
+
   // construct the refs for rendering the gl view
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const canvasContext = useRef<WebGLRenderingContext | null>(null);
@@ -49,7 +52,6 @@ function App() {
   const paletteGL = new PaletteGL(canvasRef, canvasContext, palette);
 
   // ensure initial URL is valid
-
   useEffect(() => {
     setURL(palette);
   }, [palette]);
