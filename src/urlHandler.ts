@@ -10,7 +10,7 @@ function setQueryStringWithoutReload(url : string) {
 }
 
 function urlForPalette(palette: Palette) {
-    let end = queryString.stringify({
+    const query = queryString.stringify({
         tl: palette.tl.asHex(),
         tr: palette.tr.asHex(),
         bl: palette.bl.asHex(),
@@ -20,10 +20,17 @@ function urlForPalette(palette: Palette) {
     return window.location.protocol + "//" +
     window.location.host +
     window.location.pathname + "?" +
-    end;
+    query;
 }
 
 export function shareUrlForPalette(palette: Palette) {
-    return "Check out my teeny palette on Paletteeny: " +
-    urlForPalette(palette);
+    return urlForPalette(palette) + queryString.stringify({ utm_source: 'share' });
+}
+
+export const SHARE_TITLE = 'Paletteeny';
+
+export const SHARE_TEXT = 'Check out my teeny palette on Paletteeny'
+
+export function shareStringForPalette(palette: Palette) {
+    return `${SHARE_TEXT}: ${shareUrlForPalette(palette)}`;
 }

@@ -3,7 +3,7 @@ import PaletteView from './PaletteView';
 import { PaletteGL } from './PaletteGL';
 import { Palette, AnalogousPalette, MonochromaticPalette, TetradicPalette } from './Palette/Palettes';
 import { RandomColor, HexColor } from './Palette/Color';
-import { setURL, shareUrlForPalette } from './urlHandler';
+import { setURL, shareStringForPalette, shareUrlForPalette, SHARE_TEXT, SHARE_TITLE } from './urlHandler';
 import { RangeSlider } from './Components/RangeSlider';
 import { ReactComponent as ExportIcon } from './icons/export.svg'
 import { ReactComponent as LinkIcon } from './icons/link.svg'
@@ -83,8 +83,22 @@ function App() {
   }
 
   const copyLink = () => {
-    navigator.clipboard.writeText(shareUrlForPalette(palette));
+    navigator.clipboard.writeText(shareStringForPalette(palette));
     showSnack('Link copied to clipboard.');
+  }
+
+  const share = () => {
+    if (!!window.navigator.share) {
+      // If we have native share functionality, use that
+      window.navigator.share({
+        title: SHARE_TITLE,
+        text: SHARE_TEXT,
+        url: shareUrlForPalette(palette),
+      });
+    } else {
+      // Else, just do the copy
+      copyLink();
+    }
   }
 
   const exportCanvas = () => {
@@ -94,7 +108,7 @@ function App() {
   return (
     <div className="App">
     <div className="App-header">
-      <TooltipButton className="Export-button Tooltip" tooltip="Share" onClick={copyLink}><LinkIcon/></TooltipButton>
+      <TooltipButton className="Export-button Tooltip" tooltip="Share" onClick={share}><LinkIcon/></TooltipButton>
       <h1><a href="/">palet<sup>teeny</sup></a></h1>
       <TooltipButton className="Export-button Tooltip" tooltip="Export" onClick={exportCanvas}><ExportIcon/></TooltipButton>
     </div>
