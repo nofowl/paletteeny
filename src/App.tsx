@@ -1,8 +1,8 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 import PaletteView from './Components/PaletteView';
 import { PaletteRenderer } from './Palette/PaletteRenderer';
-import { Palette, AnalogousPalette, MonochromaticPalette, TetradicPalette } from './Palette/Palettes';
+import { AnalogousPalette, MonochromaticPalette, TetradicPalette } from './Palette/Palettes';
 import { RandomColor, HexColor } from './Palette/Color';
 import { shareStringForPalette, shareUrlForPalette, SHARE_TEXT, SHARE_TITLE } from './urlHandler';
 import { RangeSlider } from './Components/RangeSlider';
@@ -14,7 +14,10 @@ import Footer from './Components/Footer';
 import Header from './Components/Header';
 const queryString = require('query-string');
 
-const SNACKBAR_ORIGIN: SnackbarOrigin = {vertical:'bottom', horizontal:'center'};
+const SNACKBAR_ORIGIN: SnackbarOrigin = {
+  vertical:'bottom',
+  horizontal:'center'
+};
 
 function App() {
   // initialise state
@@ -57,49 +60,42 @@ function App() {
   const canvas2DRef = useRef<HTMLCanvasElement | null>(null);
   const canvas2DContext = useRef<CanvasRenderingContext2D | null>(null);
 
-  const paletteGL = new PaletteRenderer(
+  const paletteGL = useMemo(() => new PaletteRenderer(
     canvasGLRef,
     canvasGLContext,
     canvas2DRef,
     canvas2DContext,
-    palette);
+    palette
+  ), [
+    canvasGLRef,
+    canvasGLContext,
+    canvas2DRef,
+    canvas2DContext,
+    palette
+  ]);
 
   // ensure changed URL is clean
   useEffect(() => {
     window.history.replaceState({}, "", "/");
   }, [palette]);
 
-  const setPalette = (p: Palette) => {
-    setPaletteState(p);
-  }
+  const newMonochromatic = useCallback(() => {
+    setPaletteState(MonochromaticPalette(RandomColor(), satVariance / 100, lightVariance / 100));
+  }, [satVariance, lightVariance]);
 
-  const newMonochromatic = () => {
-    setPalette(MonochromaticPalette(RandomColor(), satVariance / 100, lightVariance / 100));
-  }
+  const newAnalogous = useCallback(() => {
+    setPaletteState(AnalogousPalette(RandomColor(), hueVariance / 100, satVariance / 100, lightVariance / 100));
+  }, [hueVariance, satVariance, lightVariance]);
 
-  const newAnalogous = () => {
-    setPalette(AnalogousPalette(RandomColor(), hueVariance / 100, satVariance / 100, lightVariance / 100));
-  }
+  const newTetradic = useCallback(() => {
+    setPaletteState(TetradicPalette(RandomColor(), hueVariance / 100, satVariance / 100, lightVariance / 100))
+  }, [hueVariance, satVariance, lightVariance]);
 
-  const newTetradic = () => {
-    setPalette(TetradicPalette(RandomColor(), hueVariance / 100, satVariance / 100, lightVariance / 100));
-  }
-
-  const showSnack = (msg : string) => {
-    setSnackMessage(msg);
-    setSnackOpen(true);
-  }
-
-  const hideSnack = () => {
+  const hideSnack = useCallback(() => {
     setSnackOpen(false);
-  }
+  }, [])
 
-  const copyLink = () => {
-    navigator.clipboard.writeText(shareStringForPalette(palette));
-    showSnack('Link copied to clipboard.');
-  }
-
-  const share = () => {
+  const share = useCallback(() => {
     if (!!window.navigator.share) {
       // If we have native share functionality, use that
       window.navigator.share({
@@ -109,18 +105,18 @@ function App() {
       });
     } else {
       // Else, just do the copy
-      copyLink();
+      navigator.clipboard.writeText(shareStringForPalette(palette));
+      setSnackMessage('Link copied to clipboard.');
+      setSnackOpen(true);
     }
-  }
+  }, [palette]);
 
-  const exportCanvas = () => {
+  const exportCanvas = useCallback(() => {
     setImageSrc(paletteGL.saveImage(640, 640));
     setShowExport(true);
-  }
+  }, [paletteGL]);
 
-  const hideExport = () => {
-    setShowExport(false);
-  }
+  const hideExport = useCallback(() => setShowExport(false), []);
 
   return (
     <>
