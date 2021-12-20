@@ -1,21 +1,40 @@
 .App {
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+  background-color: #222222;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+}
+
+h1 {
+  font-size: 2em;
+  margin: 0;
+}
+
+h2 {
+  font-size: 0.5em;
+  bottom: 0;
+}
+
+sup {
+  font-size: 0.5em;
+}
+
+.App a {
+  text-decoration: none;
+  color: #333333;
+  transition: color 0.5s;
+}
+
+.App a:hover {
+  color: #666666;
+}
+
+.App-body {
+  background-color: #222222;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -24,15 +43,147 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.App-header {
+  margin: 0.5em;
+  width: min(640px, min(90vw, 90vh));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.Export-button {
+  margin-top: auto;
+  width: 3em;
+  height: 3em;
+  border: 0px transparent;
+  border-radius: 100%;
+  padding: 0;
+  background-color: transparent;
 }
+
+.Export-button svg {
+  color: #333333;
+  transition: color 0.5s;
+}
+
+.Export-button:hover svg {
+  color: #666666;
+}
+
+.Palette-window {
+  width: min(640px, min(90vw, 90vh));
+  height: min(640px, min(90vw, 90vh));
+  position: relative;
+}
+
+.PaletteView {
+  width: 100%;
+  height: 100%;
+  border: 0px solid transparent;
+  border-radius: 2%;
+}
+
+.Palette-buttons {
+  padding: 8px;
+}
+
+.Palette-button {
+  background-color: #333333;
+  border: 0px solid transparent;
+  border-radius: 8px;
+  padding: 8px;
+  margin: 8px;
+  color: #555555;
+  transition: color 0.5s;
+}
+
+.Palette-button:hover {
+  color: #a4a4a4;
+}
+
+.Lock-button {
+  width: 5%;
+  height: 5%;
+  margin: 1%;
+  border: 0px solid transparent;
+  border-radius: 100%;
+  position: absolute;
+  cursor: pointer;
+}
+
+.Lock-button#tl {
+  left: 0;
+  top: 0;
+}
+
+.Lock-button#tr {
+  right: 0;
+  top: 0;
+}
+
+.Lock-button#bl {
+  left: 0;
+  bottom: 0;
+}
+
+.Lock-button#br {
+  right: 0;
+  bottom: 0;
+}
+
+.RangeControl {
+  width: min(320px, min(50vw, 50vh))
+}
+
+.MuiSnackbarContent-message {
+  margin: auto;
+  color: #a4a4a4;
+}
+
+.MuiPaper-root {
+  background-color: #333333;
+}
+
+.Tooltip {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Tooltip-text {
+  visibility: hidden;
+  background-color: #333333;
+  color: #a4a4a4;
+  text-align: center;
+  padding: 5px;
+  border-radius: 6px;
+
+  /* Position the tooltip text */
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+
+  /* Fade in tooltip */
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* Tooltip arrow */
+.Tooltip .Tooltip-text::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #333333 transparent transparent transparent;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.Tooltip:hover .Tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
