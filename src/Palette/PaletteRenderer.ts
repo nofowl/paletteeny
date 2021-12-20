@@ -260,20 +260,25 @@ export class PaletteRenderer
         }
     }
 
-    saveImage(width: number, height: number) {
+    saveImage(width: number, height: number) : string {
         this.render(width, height, true);
 
-        let url = this.canvas2DRef.current?.toDataURL("image/png");
-        if (url) {
-            var image = new Image();
-            image.src = url;
-    
-            var w = window.open("");
-            w!.document.title="Paleteeny output";
-            w!.document.write(image.outerHTML);
+        if (this.canvas2DRef.current) {
+            return this.canvas2DRef.current.toDataURL("image/png");
         }
 
-        // clear the render
-        this.render(width, height);
+        return "";
+        // let url = this.canvas2DRef.current?.toDataURL("image/png");
+        // if (url) {
+        //     var image = new Image();
+        //     image.src = url;
+    
+        //     var w = window.open("");
+        //     w!.document.title="Paleteeny output";
+        //     w!.document.write(image.outerHTML);
+        // }
+
+        // // clear the render
+        // this.render(width, height);
     }
 }

@@ -74,6 +74,29 @@ button:focus {
   color: #666666;
 }
 
+.ExportOverlay {
+  position: fixed;
+  opacity: 0;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  visibility: hidden;
+  background: #000000aa;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.5s ease-in-out;
+  z-index: 100;
+}
+
+.Export {
+  width: min(640px, min(90vw, 90vh));
+  height: min(640px, min(90vw, 90vh));
+  border: 8px solid #222222;
+}
+
 .Palette-window {
   width: min(640px, min(90vw, 90vh));
   height: min(640px, min(90vw, 90vh));
