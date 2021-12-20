@@ -1,31 +1,24 @@
-import { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 
 interface Props {
-    show: boolean;
-    imageSrc: string;
-    onClose: () => void;
+  show: boolean;
+  imageSrc: string;
+  onClose: () => void;
 }
 
-const ExportPopup = (props: Props) => {
+export default function ExportPopup({show, imageSrc, onClose}: Props) {
+  const style = useMemo<React.CSSProperties>(() => ({
+    visibility: show ? "visible" : "hidden",
+    opacity: show ? "1" : "0",
+  }), [show]);
 
-    const [show, setShown] = useState(false);
-    const [imageSrc, setImageSrc] = useState("");
-
-    useEffect(() => {
-        setShown(props.show);
-        setImageSrc(props.imageSrc);
-    }, [props]);
-
-    return (
-        <div style={{
-            visibility: show ? "visible" : "hidden",
-            opacity: show ? "1" : "0"
-        }}
-        className="ExportOverlay"
-        onClick={props.onClose}>
-            <img src={imageSrc} className="Export"/>
-        </div>
-    )
+  return (
+    <div
+      style={style}
+      className="ExportOverlay"
+      onClick={onClose}
+    >
+      <img src={imageSrc} alt="Palette to export" className="Export"/>
+    </div>
+  );
 }
-
-export default ExportPopup;
