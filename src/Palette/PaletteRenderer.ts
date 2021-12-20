@@ -1,5 +1,7 @@
-import { Palette } from "./Palette/Palettes"
+import { Palette } from "./Palettes"
 import React from "react"
+import { SERVFAIL } from "dns";
+import { palette } from "@mui/system";
 
 type ProgramInfo = {
     program: WebGLProgram | null,
@@ -21,19 +23,25 @@ type Buffers = {
     position: WebGLBuffer | null
 };
 
-export class PaletteGL
+export class PaletteRenderer
 {
-    canvasRef: React.MutableRefObject<HTMLCanvasElement | null>;
-    canvasContext: React.MutableRefObject<WebGLRenderingContext | null>;
+    canvasGLRef: React.MutableRefObject<HTMLCanvasElement | null>;
+    canvasGLContext: React.MutableRefObject<WebGLRenderingContext | null>;
+    canvas2DRef: React.MutableRefObject<HTMLCanvasElement | null>;
+    canvas2DContext: React.MutableRefObject<CanvasRenderingContext2D | null>;
     palette: Palette;
 
     constructor(
-        canvasRef: React.MutableRefObject<HTMLCanvasElement | null>,
-        canvasContext: React.MutableRefObject<WebGLRenderingContext | null>,
+        canvasGLRef: React.MutableRefObject<HTMLCanvasElement | null>,
+        canvasGLContext: React.MutableRefObject<WebGLRenderingContext | null>,
+        canvas2DRef: React.MutableRefObject<HTMLCanvasElement | null>,
+        canvas2DContext: React.MutableRefObject<CanvasRenderingContext2D | null>,
         palette: Palette)
     {
-        this.canvasRef = canvasRef;
-        this.canvasContext = canvasContext;
+        this.canvasGLRef = canvasGLRef;
+        this.canvasGLContext = canvasGLContext;
+        this.canvas2DRef = canvas2DRef;
+        this.canvas2DContext = canvas2DContext;
         this.palette = palette;
     }
 
@@ -138,15 +146,15 @@ export class PaletteGL
         gl.drawArrays(gl.TRIANGLE_STRIP, offset, vertexCount);
     }
 
-    render(width: number, height: number) : string | void {
-        if (this.canvasRef.current)
+    renderGL(width: number, height: number) {
+        if (this.canvasGLRef.current)
         {
-            this.canvasRef.current.width = width;
-            this.canvasRef.current.height = height;
+            this.canvasGLRef.current.width = width;
+            this.canvasGLRef.current.height = height;
 
-            this.canvasContext.current = this.canvasRef.current.getContext('webgl', {preserveDrawingBuffer: true});
+            this.canvasGLContext.current = this.canvasGLRef.current.getContext('webgl', {preserveDrawingBuffer: true});
 
-            let context = this.canvasContext.current;
+            let context = this.canvasGLContext.current;
 
             if (context === null) {
                 alert("Unable to initialize WebGL. Your browser or machine may not support it.");
@@ -202,16 +210,75 @@ export class PaletteGL
         }
     }
 
-    saveImage(width: number, height: number) {
-        this.render(width, height);
-        let url = this.canvasRef.current?.toDataURL("image/png");
-        if (url) {
-            var image = new Image();
-            image.src = url;
-    
-            var w = window.open("");
-            w!.document.title="Paleteeny output";
-            w!.document.write(image.outerHTML);
+    renderText(width: number, height: number) {
+        if (this.canvas2DRef.current)
+        {
+            this.canvas2DRef.current.width = width;
+            this.canvas2DRef.current.height = height;
+
+            this.canvas2DContext.current = this.canvas2DRef.current.getContext('2d');
+
+            let context = this.canvas2DContext.current;
+
+            if (context === null) {
+                alert("Unable to initialize text canvas.");
+                return;
+            }
+
+            context.clearRect(0, 0, width, height);
+
+            if (this.canvasGLRef.current) {
+                context.drawImage(this.canvasGLRef.current, 0, 0);
+            }
+
+            context.font = 'bold 20px segoe ui';
+            context.fillStyle = "white";
+
+            context.globalCompositeOperation = 'soft-light';
+
+            // top
+            context.textBaseline = 'top';
+            context.textAlign = 'left';
+            context.fillText('#' + this.palette.tl.asHex(), 16, 16);
+            context.textAlign = 'right';
+            context.fillText('#' + this.palette.tr.asHex(), width - 16, 16);
+
+            // bottom
+            context.textBaseline = 'bottom';
+            context.textAlign = 'left';
+            context.fillText('#' + this.palette.bl.asHex(), 16, height - 16);
+            context.textAlign = 'right';
+            context.fillText('#' + this.palette.br.asHex(), width - 16, height - 16);
         }
+    }
+
+    render(width: number, height: number, renderText: boolean = false) {
+        this.renderGL(width, height);
+
+        if (renderText) {
+            this.renderText(width, height);
+        }
+    }
+
+    saveImage(width: number, height: number) : string {
+        this.render(width, height, true);
+
+        if (this.canvas2DRef.current) {
+            return this.canvas2DRef.current.toDataURL("image/png");
+        }
+
+        return "";
+        // let url = this.canvas2DRef.current?.toDataURL("image/png");
+        // if (url) {
+        //     var image = new Image();
+        //     image.src = url;
+    
+        //     var w = window.open("");
+        //     w!.document.title="Paleteeny output";
+        //     w!.document.write(image.outerHTML);
+        // }
+
+        // // clear the render
+        // this.render(width, height);
     }
 }

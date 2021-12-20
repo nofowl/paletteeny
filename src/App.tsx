@@ -1,15 +1,16 @@
 import React, {useEffect, useRef, useState} from 'react';
-import PaletteView from './PaletteView';
-import { PaletteGL } from './PaletteGL';
+import PaletteView from './Components/PaletteView';
+import { PaletteRenderer } from './Palette/PaletteRenderer';
 import { Palette, AnalogousPalette, MonochromaticPalette, TetradicPalette } from './Palette/Palettes';
 import { RandomColor, HexColor } from './Palette/Color';
-import { setURL, shareStringForPalette, shareUrlForPalette, SHARE_TEXT, SHARE_TITLE } from './urlHandler';
+import { shareStringForPalette, shareUrlForPalette, SHARE_TEXT, SHARE_TITLE } from './urlHandler';
 import { RangeSlider } from './Components/RangeSlider';
 import { ReactComponent as ExportIcon } from './icons/export.svg'
 import { ReactComponent as LinkIcon } from './icons/link.svg'
 import { Snackbar } from '@mui/material';
 import { TooltipButton } from './Components/TooltipButton';
 import './App.css';
+import ExportPopup from './Components/ExportPopup';
 const queryString = require('query-string');
 
 function App() {
@@ -23,6 +24,8 @@ function App() {
   const [lightVariance, setLightVariance] = useState(50);
   const [snackOpen, setSnackOpen] = useState(false);
   const [snackMessage, setSnackMessage] = useState('');
+  const [showExport, setShowExport] = useState(false);
+  const [imageSrc, setImageSrc] = useState("");
 
   // Initialise from a url state
   useEffect(() => {
@@ -45,20 +48,26 @@ function App() {
     }
   }, []);
 
-  // construct the refs for rendering the gl view
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const canvasContext = useRef<WebGLRenderingContext | null>(null);
+  // must be constructed in a react component.
+  const canvasGLRef = useRef<HTMLCanvasElement | null>(null);
+  const canvasGLContext = useRef<WebGLRenderingContext | null>(null);
+  const canvas2DRef = useRef<HTMLCanvasElement | null>(null);
+  const canvas2DContext = useRef<CanvasRenderingContext2D | null>(null);
 
-  const paletteGL = new PaletteGL(canvasRef, canvasContext, palette);
+  const paletteGL = new PaletteRenderer(
+    canvasGLRef,
+    canvasGLContext,
+    canvas2DRef,
+    canvas2DContext,
+    palette);
 
-  // ensure initial URL is valid
+  // ensure changed URL is clean
   useEffect(() => {
-    setURL(palette);
+    window.history.replaceState({}, "", "/");
   }, [palette]);
 
   const setPalette = (p: Palette) => {
     setPaletteState(p);
-    setURL(palette);
   }
 
   const newMonochromatic = () => {
@@ -102,53 +111,61 @@ function App() {
   }
 
   const exportCanvas = () => {
-    paletteGL.saveImage(640, 640);
+    setImageSrc(paletteGL.saveImage(640, 640));
+    setShowExport(true);
+  }
+
+  const hideExport = () => {
+    setShowExport(false);
   }
 
   return (
-    <div className="App">
-    <div className="App-header">
-      <TooltipButton className="Export-button Tooltip" tooltip="Share" onClick={share}><LinkIcon/></TooltipButton>
-      <h1><a href="/">palet<sup>teeny</sup></a></h1>
-      <TooltipButton className="Export-button Tooltip" tooltip="Export" onClick={exportCanvas}><ExportIcon/></TooltipButton>
-    </div>
-      <div className="App-body">
-        <div className="Palette-window">
-          <PaletteView palette={palette} paletteGL={paletteGL}/>
-          <Snackbar
-            anchorOrigin={{vertical:'bottom', horizontal:'center'}}
-            open={snackOpen}
-            autoHideDuration={1000}
-            onClose={hideSnack}
-            message={snackMessage}
-          />
-        </div>
-        <span className="Palette-buttons">
-          <button className="Palette-button" onClick={newMonochromatic}>Mono</button>
-          <button className="Palette-button" onClick={newAnalogous}>Analogous</button>
-          <button className="Palette-button" onClick={newTetradic}>Tetradic</button>
-        </span>
-        {/* <div className="RangeControl">
-            <RangeSlider
-                value={hueRange}
-                onChange={(e, n) => setHueRange(n as number[])}
-            />
-            <RangeSlider
-                value={hueVariance}
-                onChange={(e, n) => setHueVariance(n as number)}
-            />
-            <RangeSlider
-                value={satVariance}
-                onChange={(e, n) => setSatVariance(n as number)}
-            />
-            <RangeSlider
-                value={lightVariance}
-                onChange={(e, n) => setLightVariance(n as number)}
-            />
-        </div> */}
+    <>
+      <ExportPopup show={showExport} onClose={hideExport} imageSrc={imageSrc}/>
+      <div className="App">
+      <div className="App-header">
+        <TooltipButton className="Export-button Tooltip" tooltip="Share" onClick={share}><LinkIcon/></TooltipButton>
+        <h1><a href="/">palet<sup>teeny</sup></a></h1>
+        <TooltipButton className="Export-button Tooltip" tooltip="Export" onClick={exportCanvas}><ExportIcon/></TooltipButton>
       </div>
-      <h2><a href="https://github.com/baronnobody">Developed by BaronNobody.</a></h2>
-    </div>
+        <div className="App-body">
+          <div className="Palette-window">
+            <PaletteView palette={palette} paletteGL={paletteGL}/>
+            <Snackbar
+              anchorOrigin={{vertical:'bottom', horizontal:'center'}}
+              open={snackOpen}
+              autoHideDuration={1000}
+              onClose={hideSnack}
+              message={snackMessage}
+            />
+          </div>
+          <span className="Palette-buttons">
+            <button className="Palette-button" onClick={newMonochromatic}>Mono</button>
+            <button className="Palette-button" onClick={newAnalogous}>Analogous</button>
+            <button className="Palette-button" onClick={newTetradic}>Tetradic</button>
+          </span>
+          {/* <div className="RangeControl">
+              <RangeSlider
+                  value={hueRange}
+                  onChange={(e, n) => setHueRange(n as number[])}
+              />
+              <RangeSlider
+                  value={hueVariance}
+                  onChange={(e, n) => setHueVariance(n as number)}
+              />
+              <RangeSlider
+                  value={satVariance}
+                  onChange={(e, n) => setSatVariance(n as number)}
+              />
+              <RangeSlider
+                  value={lightVariance}
+                  onChange={(e, n) => setLightVariance(n as number)}
+              />
+          </div> */}
+        </div>
+        <h2><a href="https://github.com/baronnobody">Developed by BaronNobody.</a></h2>
+      </div>
+    </>
   );
 }
 
