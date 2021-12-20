@@ -11,6 +11,7 @@ import { Snackbar } from '@mui/material';
 import { TooltipButton } from './Components/TooltipButton';
 import './App.css';
 import ExportPopup from './Components/ExportPopup';
+import Footer from './Components/Footer';
 const queryString = require('query-string');
 
 function App() {
@@ -163,7 +164,7 @@ function App() {
               />
           </div> */}
         </div>
-        <h2><a href="https://github.com/baronnobody">Developed by BaronNobody.</a></h2>
+        <Footer />
       </div>
     </>
   );
