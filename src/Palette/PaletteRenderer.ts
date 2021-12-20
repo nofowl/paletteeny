@@ -210,7 +210,7 @@ export class PaletteRenderer
         }
     }
 
-    renderText(width: number, height: number, renderText: boolean) {
+    renderText(width: number, height: number) {
         if (this.canvas2DRef.current)
         {
             this.canvas2DRef.current.width = width;
@@ -231,32 +231,33 @@ export class PaletteRenderer
                 context.drawImage(this.canvasGLRef.current, 0, 0);
             }
 
-            if (renderText) {
-                context.font = '28px sans-serif';
-                context.fillStyle = "rgb(50, 50, 50)";
+            context.font = 'bold 20px segoe ui';
+            context.fillStyle = "white";
 
-                context.globalCompositeOperation = 'soft-light';
-    
-                // top
-                context.textBaseline = 'top';
-                context.textAlign = 'left';
-                context.fillText('#' + this.palette.tl.asHex(), 16, 16);
-                context.textAlign = 'right';
-                context.fillText('#' + this.palette.tr.asHex(), width - 16, 16);
-    
-                // bottom
-                context.textBaseline = 'bottom';
-                context.textAlign = 'left';
-                context.fillText('#' + this.palette.bl.asHex(), 16, height - 16);
-                context.textAlign = 'right';
-                context.fillText('#' + this.palette.br.asHex(), width - 16, height - 16);
-            }
+            context.globalCompositeOperation = 'soft-light';
+
+            // top
+            context.textBaseline = 'top';
+            context.textAlign = 'left';
+            context.fillText('#' + this.palette.tl.asHex(), 16, 16);
+            context.textAlign = 'right';
+            context.fillText('#' + this.palette.tr.asHex(), width - 16, 16);
+
+            // bottom
+            context.textBaseline = 'bottom';
+            context.textAlign = 'left';
+            context.fillText('#' + this.palette.bl.asHex(), 16, height - 16);
+            context.textAlign = 'right';
+            context.fillText('#' + this.palette.br.asHex(), width - 16, height - 16);
         }
     }
 
     render(width: number, height: number, renderText: boolean = false) {
         this.renderGL(width, height);
-        this.renderText(width, height, renderText);
+
+        if (renderText) {
+            this.renderText(width, height);
+        }
     }
 
     saveImage(width: number, height: number) {
