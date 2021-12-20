@@ -1,7 +1,6 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 import PaletteView from './Components/PaletteView';
-import { PaletteRenderer } from './Palette/PaletteRenderer';
 import { AnalogousPalette, MonochromaticPalette, TetradicPalette } from './Palette/Palettes';
 import { RandomColor, HexColor } from './Palette/Color';
 import { shareStringForPalette, shareUrlForPalette, SHARE_TEXT, SHARE_TITLE } from './urlHandler';
@@ -12,12 +11,16 @@ import './App.css';
 import ExportPopup from './Components/ExportPopup';
 import Footer from './Components/Footer';
 import Header from './Components/Header';
+import { getImageData } from './Palette/CanvasHelper';
 const queryString = require('query-string');
 
 const SNACKBAR_ORIGIN: SnackbarOrigin = {
   vertical:'bottom',
   horizontal:'center'
 };
+
+const RENDER_WIDTH = 640;
+const RENDER_HEIGHT = 640;
 
 function App() {
   // initialise state
@@ -53,26 +56,6 @@ function App() {
       setPaletteState(urlPalette);
     }
   }, []);
-
-  // must be constructed in a react component.
-  const canvasGLRef = useRef<HTMLCanvasElement | null>(null);
-  const canvasGLContext = useRef<WebGLRenderingContext | null>(null);
-  const canvas2DRef = useRef<HTMLCanvasElement | null>(null);
-  const canvas2DContext = useRef<CanvasRenderingContext2D | null>(null);
-
-  const paletteGL = useMemo(() => new PaletteRenderer(
-    canvasGLRef,
-    canvasGLContext,
-    canvas2DRef,
-    canvas2DContext,
-    palette
-  ), [
-    canvasGLRef,
-    canvasGLContext,
-    canvas2DRef,
-    canvas2DContext,
-    palette
-  ]);
 
   // ensure changed URL is clean
   useEffect(() => {
@@ -111,10 +94,12 @@ function App() {
     }
   }, [palette]);
 
+  const imageData = useMemo(() => getImageData(RENDER_WIDTH, RENDER_HEIGHT, palette), [palette]);
+
   const exportCanvas = useCallback(() => {
-    setImageSrc(paletteGL.saveImage(640, 640));
+    setImageSrc(imageData);
     setShowExport(true);
-  }, [paletteGL]);
+  }, [imageData]);
 
   const hideExport = useCallback(() => setShowExport(false), []);
 
@@ -128,7 +113,7 @@ function App() {
       />
         <div className="App-body">
           <div className="Palette-window">
-            <PaletteView palette={palette} paletteGL={paletteGL}/>
+            <PaletteView palette={palette} width={RENDER_WIDTH} height={RENDER_HEIGHT}/>
             <Snackbar
               anchorOrigin={SNACKBAR_ORIGIN}
               open={snackOpen}
