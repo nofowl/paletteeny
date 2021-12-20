@@ -1,9 +1,9 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import PaletteView from './PaletteView';
 import { PaletteGL } from './PaletteGL';
 import { Palette, AnalogousPalette, MonochromaticPalette, TetradicPalette } from './Palette/Palettes';
 import { RandomColor, HexColor } from './Palette/Color';
-import { setURL, shareUrlForPalette } from './urlHandler';
+import { setURL, shareStringForPalette, shareUrlForPalette, SHARE_TEXT, SHARE_TITLE } from './urlHandler';
 import { RangeSlider } from './Components/RangeSlider';
 import { ReactComponent as ExportIcon } from './icons/export.svg'
 import { ReactComponent as LinkIcon } from './icons/link.svg'
@@ -13,26 +13,8 @@ import './App.css';
 const queryString = require('query-string');
 
 function App() {
-  // Initialise from a url state
-  let urlPalette = AnalogousPalette(RandomColor(), 0.3, 0.8, 0.5);
-  let parsedURL = queryString.parse(window.location.search);
-  if (parsedURL) {
-    if (parsedURL.tl) {
-      urlPalette.tl = HexColor(parsedURL.tl);
-    }
-    if (parsedURL.tr) {
-      urlPalette.tr = HexColor(parsedURL.tr);
-    }
-    if (parsedURL.bl) {
-      urlPalette.bl = HexColor(parsedURL.bl);
-    }
-    if (parsedURL.br) {
-      urlPalette.br = HexColor(parsedURL.br);
-    }
-  }
-
   // initialise state
-  const [palette, setPaletteState] = useState(urlPalette);
+  const [palette, setPaletteState] = useState(AnalogousPalette(RandomColor(), 0.3, 0.8, 0.5));
   const [hueRange, setHueRange] = useState([0, 100]);
   const [satRange, setSatRange] = useState([0, 100]);
   const [lightRange, setLightRange] = useState([0, 100]);
@@ -42,14 +24,37 @@ function App() {
   const [snackOpen, setSnackOpen] = useState(false);
   const [snackMessage, setSnackMessage] = useState('');
 
-  // construct the refs for rendering the gl view
-  let canvasRef = useRef<HTMLCanvasElement | null>(null);
-  let canvasContext = useRef<WebGLRenderingContext | null>(null);
+  // Initialise from a url state
+  useEffect(() => {
+    const urlPalette = AnalogousPalette(RandomColor(), 0.3, 0.8, 0.5);
+    let parsedURL = queryString.parse(window.location.search);
+    if (parsedURL) {
+      if (parsedURL.tl) {
+        urlPalette.tl = HexColor(parsedURL.tl);
+      }
+      if (parsedURL.tr) {
+        urlPalette.tr = HexColor(parsedURL.tr);
+      }
+      if (parsedURL.bl) {
+        urlPalette.bl = HexColor(parsedURL.bl);
+      }
+      if (parsedURL.br) {
+        urlPalette.br = HexColor(parsedURL.br);
+      }
+      setPaletteState(urlPalette);
+    }
+  }, []);
 
-  let paletteGL = new PaletteGL(canvasRef, canvasContext, palette);
+  // construct the refs for rendering the gl view
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const canvasContext = useRef<WebGLRenderingContext | null>(null);
+
+  const paletteGL = new PaletteGL(canvasRef, canvasContext, palette);
 
   // ensure initial URL is valid
-  setURL(palette);
+  useEffect(() => {
+    setURL(palette);
+  }, [palette]);
 
   const setPalette = (p: Palette) => {
     setPaletteState(p);
@@ -78,8 +83,22 @@ function App() {
   }
 
   const copyLink = () => {
-    navigator.clipboard.writeText(shareUrlForPalette(palette));
+    navigator.clipboard.writeText(shareStringForPalette(palette));
     showSnack('Link copied to clipboard.');
+  }
+
+  const share = () => {
+    if (!!window.navigator.share) {
+      // If we have native share functionality, use that
+      window.navigator.share({
+        title: SHARE_TITLE,
+        text: SHARE_TEXT,
+        url: shareUrlForPalette(palette),
+      });
+    } else {
+      // Else, just do the copy
+      copyLink();
+    }
   }
 
   const exportCanvas = () => {
@@ -89,7 +108,7 @@ function App() {
   return (
     <div className="App">
     <div className="App-header">
-      <TooltipButton className="Export-button Tooltip" tooltip="Share" onClick={copyLink}><LinkIcon/></TooltipButton>
+      <TooltipButton className="Export-button Tooltip" tooltip="Share" onClick={share}><LinkIcon/></TooltipButton>
       <h1><a href="/">palet<sup>teeny</sup></a></h1>
       <TooltipButton className="Export-button Tooltip" tooltip="Export" onClick={exportCanvas}><ExportIcon/></TooltipButton>
     </div>
