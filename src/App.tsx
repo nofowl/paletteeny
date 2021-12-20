@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 
 import PaletteView from './Components/PaletteView';
 import { AnalogousPalette, MonochromaticPalette, TetradicPalette } from './Palette/Palettes';
