@@ -40,7 +40,7 @@ class Color {
             channelHex(this.r) +
             channelHex(this.g) +
             channelHex(this.b)
-        )
+        ).toUpperCase();
     }
 
     setHSL(hue: number, sat: number, light: number) {
@@ -120,7 +120,7 @@ export function RandomColor() : Color {
 }
 
 export function HexColor(hex: string) : Color {
-    var result = /([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    var result = /([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})(.*)$/i.exec(hex);
     if (result) {
         let c = new Color(
             parseInt(result[1], 16) / 255,

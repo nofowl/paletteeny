@@ -1,14 +1,6 @@
 import {Palette} from "./Palette/Palettes";
 const queryString = require('query-string');
 
-export function setURL(palette: Palette) {
-    setQueryStringWithoutReload(urlForPalette(palette));
-}
-
-function setQueryStringWithoutReload(url : string) {
-    window.history.replaceState({}, "test url", url);
-}
-
 function urlForPalette(palette: Palette) {
     const query = queryString.stringify({
         tl: palette.tl.asHex(),

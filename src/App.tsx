@@ -1,9 +1,9 @@
 import React, {useEffect, useRef, useState} from 'react';
-import PaletteView from './PaletteView';
-import { PaletteGL } from './PaletteGL';
+import PaletteView from './Components/PaletteView';
+import { PaletteRenderer } from './Palette/PaletteRenderer';
 import { Palette, AnalogousPalette, MonochromaticPalette, TetradicPalette } from './Palette/Palettes';
 import { RandomColor, HexColor } from './Palette/Color';
-import { setURL, shareStringForPalette, shareUrlForPalette, SHARE_TEXT, SHARE_TITLE } from './urlHandler';
+import { shareStringForPalette, shareUrlForPalette, SHARE_TEXT, SHARE_TITLE } from './urlHandler';
 import { RangeSlider } from './Components/RangeSlider';
 import { ReactComponent as ExportIcon } from './icons/export.svg'
 import { ReactComponent as LinkIcon } from './icons/link.svg'
@@ -45,20 +45,26 @@ function App() {
     }
   }, []);
 
-  // construct the refs for rendering the gl view
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const canvasContext = useRef<WebGLRenderingContext | null>(null);
+  // must be constructed in a react component.
+  const canvasGLRef = useRef<HTMLCanvasElement | null>(null);
+  const canvasGLContext = useRef<WebGLRenderingContext | null>(null);
+  const canvas2DRef = useRef<HTMLCanvasElement | null>(null);
+  const canvas2DContext = useRef<CanvasRenderingContext2D | null>(null);
 
-  const paletteGL = new PaletteGL(canvasRef, canvasContext, palette);
+  const paletteGL = new PaletteRenderer(
+    canvasGLRef,
+    canvasGLContext,
+    canvas2DRef,
+    canvas2DContext,
+    palette);
 
-  // ensure initial URL is valid
+  // ensure changed URL is clean
   useEffect(() => {
-    setURL(palette);
+    window.history.replaceState({}, "", "/");
   }, [palette]);
 
   const setPalette = (p: Palette) => {
     setPaletteState(p);
-    setURL(palette);
   }
 
   const newMonochromatic = () => {
