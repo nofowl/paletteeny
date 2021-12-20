@@ -8,7 +8,7 @@ import { RangeSlider } from './Components/RangeSlider';
 import { ReactComponent as ExportIcon } from './icons/export.svg'
 import { ReactComponent as LinkIcon } from './icons/link.svg'
 import { Snackbar } from '@mui/material';
-import { TooltipButton } from './Components/TooltipButton';
+import TooltipButton from './Components/TooltipButton';
 import './App.css';
 import ExportPopup from './Components/ExportPopup';
 import Footer from './Components/Footer';
