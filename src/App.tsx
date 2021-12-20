@@ -1,4 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
+
 import PaletteView from './Components/PaletteView';
 import { PaletteRenderer } from './Palette/PaletteRenderer';
 import { Palette, AnalogousPalette, MonochromaticPalette, TetradicPalette } from './Palette/Palettes';
@@ -6,12 +7,14 @@ import { RandomColor, HexColor } from './Palette/Color';
 import { shareStringForPalette, shareUrlForPalette, SHARE_TEXT, SHARE_TITLE } from './urlHandler';
 import { RangeSlider } from './Components/RangeSlider';
 
-import { Snackbar } from '@mui/material';
+import { Snackbar, SnackbarOrigin } from '@mui/material';
 import './App.css';
 import ExportPopup from './Components/ExportPopup';
 import Footer from './Components/Footer';
 import Header from './Components/Header';
 const queryString = require('query-string');
+
+const SNACKBAR_ORIGIN: SnackbarOrigin = {vertical:'bottom', horizontal:'center'};
 
 function App() {
   // initialise state
@@ -131,7 +134,7 @@ function App() {
           <div className="Palette-window">
             <PaletteView palette={palette} paletteGL={paletteGL}/>
             <Snackbar
-              anchorOrigin={{vertical:'bottom', horizontal:'center'}}
+              anchorOrigin={SNACKBAR_ORIGIN}
               open={snackOpen}
               autoHideDuration={1000}
               onClose={hideSnack}
