@@ -5,13 +5,12 @@ import { Palette, AnalogousPalette, MonochromaticPalette, TetradicPalette } from
 import { RandomColor, HexColor } from './Palette/Color';
 import { shareStringForPalette, shareUrlForPalette, SHARE_TEXT, SHARE_TITLE } from './urlHandler';
 import { RangeSlider } from './Components/RangeSlider';
-import { ReactComponent as ExportIcon } from './icons/export.svg'
-import { ReactComponent as LinkIcon } from './icons/link.svg'
+
 import { Snackbar } from '@mui/material';
-import TooltipButton from './Components/TooltipButton';
 import './App.css';
 import ExportPopup from './Components/ExportPopup';
 import Footer from './Components/Footer';
+import Header from './Components/Header';
 const queryString = require('query-string');
 
 function App() {
@@ -124,11 +123,10 @@ function App() {
     <>
       <ExportPopup show={showExport} onClose={hideExport} imageSrc={imageSrc}/>
       <div className="App">
-      <div className="App-header">
-        <TooltipButton className="Export-button Tooltip" tooltip="Share" onClick={share}><LinkIcon/></TooltipButton>
-        <h1><a href="/">palet<sup>teeny</sup></a></h1>
-        <TooltipButton className="Export-button Tooltip" tooltip="Export" onClick={exportCanvas}><ExportIcon/></TooltipButton>
-      </div>
+      <Header
+        onShare={share}
+        onExportCanvas={exportCanvas}
+      />
         <div className="App-body">
           <div className="Palette-window">
             <PaletteView palette={palette} paletteGL={paletteGL}/>
