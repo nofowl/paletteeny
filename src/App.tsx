@@ -123,11 +123,11 @@ function App() {
     <>
       <ExportPopup show={showExport} onClose={hideExport} imageSrc={imageSrc}/>
       <div className="App">
-      <div className="App-header">
-        <TooltipButton className="Export-button Tooltip" tooltip="Share" onClick={share}><LinkIcon/></TooltipButton>
-        <h1><a href="/">palet<sup>teeny</sup></a></h1>
-        <TooltipButton className="Export-button Tooltip" tooltip="Export" onClick={exportCanvas}><ExportIcon/></TooltipButton>
-      </div>
+        <div className="App-header">
+          <TooltipButton className="Export-button Tooltip" tooltip="Share" onClick={share}><LinkIcon/></TooltipButton>
+          <h1><a href="/">palet<sup>teeny</sup></a></h1>
+          <TooltipButton className="Export-button Tooltip" tooltip="Export" onClick={exportCanvas}><ExportIcon/></TooltipButton>
+        </div>
         <div className="App-body">
           <div className="Palette-window">
             <PaletteView palette={palette} paletteGL={paletteGL}/>
