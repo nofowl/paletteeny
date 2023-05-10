@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 
 import PaletteView from './Components/PaletteView';
-import { AnalogousPalette, MonochromaticPalette, TetradicPalette } from './Palette/Palettes';
+import { Palette, AnalogousPalette, MonochromaticPalette, TetradicPalette } from './Palette/Palettes';
 import { RandomColor, HexColor } from './Palette/Color';
 import { shareStringForPalette, shareUrlForPalette, SHARE_TEXT, SHARE_TITLE } from './urlHandler';
 import { RangeSlider } from './Components/RangeSlider';
@@ -25,6 +25,7 @@ const RENDER_HEIGHT = 640;
 function App() {
   // initialise state
   const [palette, setPaletteState] = useState(AnalogousPalette(RandomColor(), 0.3, 0.8, 0.5));
+  const [lastPalette, setLastPaletteState] = useState(palette);
   const [hueRange, setHueRange] = useState([0, 100]);
   const [satRange, setSatRange] = useState([0, 100]);
   const [lightRange, setLightRange] = useState([0, 100]);
@@ -54,6 +55,7 @@ function App() {
         urlPalette.br = HexColor(parsedURL.br);
       }
       setPaletteState(urlPalette);
+      setLastPaletteState(urlPalette);
     }
   }, []);
 
@@ -62,21 +64,30 @@ function App() {
     window.history.replaceState({}, "", "/");
   }, [palette]);
 
+  const setNewPaletteState = useCallback((p : Palette) => {
+    setLastPaletteState(palette);
+    setPaletteState(p);
+  }, [palette]);
+
   const newMonochromatic = useCallback(() => {
-    setPaletteState(MonochromaticPalette(RandomColor(), satVariance / 100, lightVariance / 100));
-  }, [satVariance, lightVariance]);
+    setNewPaletteState(MonochromaticPalette(RandomColor(), satVariance / 100, lightVariance / 100));
+  }, [setNewPaletteState, satVariance, lightVariance]);
 
   const newAnalogous = useCallback(() => {
-    setPaletteState(AnalogousPalette(RandomColor(), hueVariance / 100, satVariance / 100, lightVariance / 100));
-  }, [hueVariance, satVariance, lightVariance]);
+    setNewPaletteState(AnalogousPalette(RandomColor(), hueVariance / 100, satVariance / 100, lightVariance / 100));
+  }, [setNewPaletteState, hueVariance, satVariance, lightVariance]);
 
   const newTetradic = useCallback(() => {
-    setPaletteState(TetradicPalette(RandomColor(), hueVariance / 100, satVariance / 100, lightVariance / 100))
-  }, [hueVariance, satVariance, lightVariance]);
+    setNewPaletteState(TetradicPalette(RandomColor(), hueVariance / 100, satVariance / 100, lightVariance / 100))
+  }, [setNewPaletteState, hueVariance, satVariance, lightVariance]);
+
+  const setLastPalette = useCallback(() => {
+    setNewPaletteState(lastPalette);
+  }, [setNewPaletteState, lastPalette]);
 
   const hideSnack = useCallback(() => {
     setSnackOpen(false);
-  }, [])
+  }, []);
 
   const share = useCallback(() => {
     if (!!window.navigator.share) {
@@ -123,9 +134,10 @@ function App() {
             />
           </div>
           <span className="Palette-buttons">
-            <button className="Palette-button" onClick={newMonochromatic}>Mono</button>
-            <button className="Palette-button" onClick={newAnalogous}>Analogous</button>
-            <button className="Palette-button" onClick={newTetradic}>Tetradic</button>
+            <button className="Palette-button" onClick={newMonochromatic}>mono</button>
+            <button className="Palette-button" onClick={newAnalogous}>analogous</button>
+            <button className="Palette-button" onClick={newTetradic}>tetradic</button>
+            <button className="Palette-button" onClick={setLastPalette}>previous</button>
           </span>
           {/* <div className="RangeControl">
               <RangeSlider

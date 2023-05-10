@@ -24,7 +24,7 @@ export function shareUrlForPalette(palette: Palette) {
 
 export const SHARE_TITLE = 'Paletteeny';
 
-export const SHARE_TEXT = 'Check out my teeny palette on Paletteeny'
+export const SHARE_TEXT = 'Check out my teeny palette on Paletteeny!'
 
 export function shareStringForPalette(palette: Palette) {
     return `${SHARE_TEXT}: ${shareUrlForPalette(palette)}`;

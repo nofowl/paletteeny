@@ -53,6 +53,7 @@ button:focus {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  color: #333333;
 }
 
 .Export-button {
@@ -131,6 +132,7 @@ button:focus {
   margin: 8px;
   color: #555555;
   transition: color 0.5s;
+  font-weight: bolder;
 }
 
 .Palette-button:hover {
