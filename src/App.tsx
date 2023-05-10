@@ -4,7 +4,6 @@ import PaletteView from './Components/PaletteView';
 import { Palette, AnalogousPalette, MonochromaticPalette, TetradicPalette } from './Palette/Palettes';
 import { RandomColor, HexColor } from './Palette/Color';
 import { shareStringForPalette, shareUrlForPalette, SHARE_TEXT, SHARE_TITLE } from './urlHandler';
-import { RangeSlider } from './Components/RangeSlider';
 
 import { Snackbar, SnackbarOrigin } from '@mui/material';
 import './App.css';
@@ -138,24 +137,6 @@ function App() {
             <button className="Palette-button" onClick={newTetradic}>tetradic</button>
             <button className="Palette-button" onClick={setLastPalette}>previous</button>
           </span>
-          {/* <div className="RangeControl">
-              <RangeSlider
-                  value={hueRange}
-                  onChange={(e, n) => setHueRange(n as number[])}
-              />
-              <RangeSlider
-                  value={hueVariance}
-                  onChange={(e, n) => setHueVariance(n as number)}
-              />
-              <RangeSlider
-                  value={satVariance}
-                  onChange={(e, n) => setSatVariance(n as number)}
-              />
-              <RangeSlider
-                  value={lightVariance}
-                  onChange={(e, n) => setLightVariance(n as number)}
-              />
-          </div> */}
         </div>
         <Footer />
       </div>
