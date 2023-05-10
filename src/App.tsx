@@ -1,21 +1,31 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+
 import PaletteView from './Components/PaletteView';
-import { PaletteRenderer } from './Palette/PaletteRenderer';
 import { Palette, AnalogousPalette, MonochromaticPalette, TetradicPalette } from './Palette/Palettes';
 import { RandomColor, HexColor } from './Palette/Color';
 import { shareStringForPalette, shareUrlForPalette, SHARE_TEXT, SHARE_TITLE } from './urlHandler';
 import { RangeSlider } from './Components/RangeSlider';
-import { ReactComponent as ExportIcon } from './icons/export.svg'
-import { ReactComponent as LinkIcon } from './icons/link.svg'
-import { Snackbar } from '@mui/material';
-import { TooltipButton } from './Components/TooltipButton';
+
+import { Snackbar, SnackbarOrigin } from '@mui/material';
 import './App.css';
 import ExportPopup from './Components/ExportPopup';
+import Footer from './Components/Footer';
+import Header from './Components/Header';
+import { getImageData } from './Palette/CanvasHelper';
 const queryString = require('query-string');
+
+const SNACKBAR_ORIGIN: SnackbarOrigin = {
+  vertical:'bottom',
+  horizontal:'center'
+};
+
+const RENDER_WIDTH = 640;
+const RENDER_HEIGHT = 640;
 
 function App() {
   // initialise state
   const [palette, setPaletteState] = useState(AnalogousPalette(RandomColor(), 0.3, 0.8, 0.5));
+  const [lastPalette, setLastPaletteState] = useState(palette);
   const [hueRange, setHueRange] = useState([0, 100]);
   const [satRange, setSatRange] = useState([0, 100]);
   const [lightRange, setLightRange] = useState([0, 100]);
@@ -45,58 +55,41 @@ function App() {
         urlPalette.br = HexColor(parsedURL.br);
       }
       setPaletteState(urlPalette);
+      setLastPaletteState(urlPalette);
     }
   }, []);
-
-  // must be constructed in a react component.
-  const canvasGLRef = useRef<HTMLCanvasElement | null>(null);
-  const canvasGLContext = useRef<WebGLRenderingContext | null>(null);
-  const canvas2DRef = useRef<HTMLCanvasElement | null>(null);
-  const canvas2DContext = useRef<CanvasRenderingContext2D | null>(null);
-
-  const paletteGL = new PaletteRenderer(
-    canvasGLRef,
-    canvasGLContext,
-    canvas2DRef,
-    canvas2DContext,
-    palette);
 
   // ensure changed URL is clean
   useEffect(() => {
     window.history.replaceState({}, "", "/");
   }, [palette]);
 
-  const setPalette = (p: Palette) => {
+  const setNewPaletteState = useCallback((p : Palette) => {
+    setLastPaletteState(palette);
     setPaletteState(p);
-  }
+  }, [palette]);
 
-  const newMonochromatic = () => {
-    setPalette(MonochromaticPalette(RandomColor(), satVariance / 100, lightVariance / 100));
-  }
+  const newMonochromatic = useCallback(() => {
+    setNewPaletteState(MonochromaticPalette(RandomColor(), satVariance / 100, lightVariance / 100));
+  }, [setNewPaletteState, satVariance, lightVariance]);
 
-  const newAnalogous = () => {
-    setPalette(AnalogousPalette(RandomColor(), hueVariance / 100, satVariance / 100, lightVariance / 100));
-  }
+  const newAnalogous = useCallback(() => {
+    setNewPaletteState(AnalogousPalette(RandomColor(), hueVariance / 100, satVariance / 100, lightVariance / 100));
+  }, [setNewPaletteState, hueVariance, satVariance, lightVariance]);
 
-  const newTetradic = () => {
-    setPalette(TetradicPalette(RandomColor(), hueVariance / 100, satVariance / 100, lightVariance / 100));
-  }
+  const newTetradic = useCallback(() => {
+    setNewPaletteState(TetradicPalette(RandomColor(), hueVariance / 100, satVariance / 100, lightVariance / 100))
+  }, [setNewPaletteState, hueVariance, satVariance, lightVariance]);
 
-  const showSnack = (msg : string) => {
-    setSnackMessage(msg);
-    setSnackOpen(true);
-  }
+  const setLastPalette = useCallback(() => {
+    setNewPaletteState(lastPalette);
+  }, [setNewPaletteState, lastPalette]);
 
-  const hideSnack = () => {
+  const hideSnack = useCallback(() => {
     setSnackOpen(false);
-  }
+  }, []);
 
-  const copyLink = () => {
-    navigator.clipboard.writeText(shareStringForPalette(palette));
-    showSnack('Link copied to clipboard.');
-  }
-
-  const share = () => {
+  const share = useCallback(() => {
     if (!!window.navigator.share) {
       // If we have native share functionality, use that
       window.navigator.share({
@@ -106,33 +99,34 @@ function App() {
       });
     } else {
       // Else, just do the copy
-      copyLink();
+      navigator.clipboard.writeText(shareStringForPalette(palette));
+      setSnackMessage('Link copied to clipboard.');
+      setSnackOpen(true);
     }
-  }
+  }, [palette]);
 
-  const exportCanvas = () => {
-    setImageSrc(paletteGL.saveImage(640, 640));
+  const imageData = useMemo(() => getImageData(RENDER_WIDTH, RENDER_HEIGHT, palette), [palette]);
+
+  const exportCanvas = useCallback(() => {
+    setImageSrc(imageData);
     setShowExport(true);
-  }
+  }, [imageData]);
 
-  const hideExport = () => {
-    setShowExport(false);
-  }
+  const hideExport = useCallback(() => setShowExport(false), []);
 
   return (
     <>
       <ExportPopup show={showExport} onClose={hideExport} imageSrc={imageSrc}/>
       <div className="App">
-      <div className="App-header">
-        <TooltipButton className="Export-button Tooltip" tooltip="Share" onClick={share}><LinkIcon/></TooltipButton>
-        <h1><a href="/">palet<sup>teeny</sup></a></h1>
-        <TooltipButton className="Export-button Tooltip" tooltip="Export" onClick={exportCanvas}><ExportIcon/></TooltipButton>
-      </div>
+      <Header
+        onShare={share}
+        onExportCanvas={exportCanvas}
+      />
         <div className="App-body">
           <div className="Palette-window">
-            <PaletteView palette={palette} paletteGL={paletteGL}/>
+            <PaletteView palette={palette} width={RENDER_WIDTH} height={RENDER_HEIGHT}/>
             <Snackbar
-              anchorOrigin={{vertical:'bottom', horizontal:'center'}}
+              anchorOrigin={SNACKBAR_ORIGIN}
               open={snackOpen}
               autoHideDuration={1000}
               onClose={hideSnack}
@@ -140,9 +134,10 @@ function App() {
             />
           </div>
           <span className="Palette-buttons">
-            <button className="Palette-button" onClick={newMonochromatic}>Mono</button>
-            <button className="Palette-button" onClick={newAnalogous}>Analogous</button>
-            <button className="Palette-button" onClick={newTetradic}>Tetradic</button>
+            <button className="Palette-button" onClick={newMonochromatic}>mono</button>
+            <button className="Palette-button" onClick={newAnalogous}>analogous</button>
+            <button className="Palette-button" onClick={newTetradic}>tetradic</button>
+            <button className="Palette-button" onClick={setLastPalette}>previous</button>
           </span>
           {/* <div className="RangeControl">
               <RangeSlider
@@ -163,7 +158,7 @@ function App() {
               />
           </div> */}
         </div>
-        <h2><a href="https://github.com/baronnobody">Developed by BaronNobody.</a></h2>
+        <Footer />
       </div>
     </>
   );

@@ -1,16 +1,14 @@
-import React from "react"
+import React from 'react'
 
-interface Props {
-    tooltip: string
-}
+type Props = React.HTMLAttributes<HTMLButtonElement> & {
+  tooltip: string;
+};
 
-export class TooltipButton extends React.Component<Props & React.HTMLAttributes<HTMLButtonElement>, {}> {
-    render() {
-        return (
-        <button {...this.props}>
-            <span className="Tooltip-text">{this.props.tooltip}</span>
-            {this.props.children}
-        </button>
-    )
-    }
+export default function TooltipButton({ tooltip, children, ...rest }: Props) {
+  return (
+    <button {...rest}>
+      <span className="Tooltip-text">{tooltip}</span>
+      {children}
+    </button>
+  );
 }

@@ -1,12 +1,15 @@
 import {Palette} from "./Palette/Palettes";
-const queryString = require('query-string');
+import queryString from 'query-string';
 
-function urlForPalette(palette: Palette) {
+type Additional = {[key: string]: string}
+
+function urlForPalette(palette: Palette, additional: Additional = {}) {
     const query = queryString.stringify({
         tl: palette.tl.asHex(),
         tr: palette.tr.asHex(),
         bl: palette.bl.asHex(),
         br: palette.br.asHex(),
+        ...additional,
     });
 
     return window.location.protocol + "//" +
@@ -16,12 +19,12 @@ function urlForPalette(palette: Palette) {
 }
 
 export function shareUrlForPalette(palette: Palette) {
-    return urlForPalette(palette) + queryString.stringify({ utm_source: 'share' });
+    return urlForPalette(palette, { utm_source: 'share' });
 }
 
 export const SHARE_TITLE = 'Paletteeny';
 
-export const SHARE_TEXT = 'Check out my teeny palette on Paletteeny'
+export const SHARE_TEXT = 'Check out my teeny palette on Paletteeny!'
 
 export function shareStringForPalette(palette: Palette) {
     return `${SHARE_TEXT}: ${shareUrlForPalette(palette)}`;
