@@ -4,7 +4,6 @@ import PaletteView from './Components/PaletteView';
 import { Palette, AnalogousPalette, MonochromaticPalette, TetradicPalette } from './Palette/Palettes';
 import { RandomColor, HexColor } from './Palette/Color';
 import { shareStringForPalette, shareUrlForPalette, SHARE_TEXT, SHARE_TITLE } from './urlHandler';
-import { RangeSlider } from './Components/RangeSlider';
 
 import { Snackbar, SnackbarOrigin } from '@mui/material';
 import './App.css';
@@ -22,16 +21,15 @@ const SNACKBAR_ORIGIN: SnackbarOrigin = {
 const RENDER_WIDTH = 640;
 const RENDER_HEIGHT = 640;
 
+// To be replaced with configurable values soon
+const hueVariance = 15;
+const satVariance = 50;
+const lightVariance = 50;
+
 function App() {
   // initialise state
   const [palette, setPaletteState] = useState(AnalogousPalette(RandomColor(), 0.3, 0.8, 0.5));
   const [lastPalette, setLastPaletteState] = useState(palette);
-  const [hueRange, setHueRange] = useState([0, 100]);
-  const [satRange, setSatRange] = useState([0, 100]);
-  const [lightRange, setLightRange] = useState([0, 100]);
-  const [hueVariance, setHueVariance] = useState(15);
-  const [satVariance, setSatVariance] = useState(50);
-  const [lightVariance, setLightVariance] = useState(50);
   const [snackOpen, setSnackOpen] = useState(false);
   const [snackMessage, setSnackMessage] = useState('');
   const [showExport, setShowExport] = useState(false);
@@ -71,15 +69,15 @@ function App() {
 
   const newMonochromatic = useCallback(() => {
     setNewPaletteState(MonochromaticPalette(RandomColor(), satVariance / 100, lightVariance / 100));
-  }, [setNewPaletteState, satVariance, lightVariance]);
+  }, [setNewPaletteState]);
 
   const newAnalogous = useCallback(() => {
     setNewPaletteState(AnalogousPalette(RandomColor(), hueVariance / 100, satVariance / 100, lightVariance / 100));
-  }, [setNewPaletteState, hueVariance, satVariance, lightVariance]);
+  }, [setNewPaletteState]);
 
   const newTetradic = useCallback(() => {
     setNewPaletteState(TetradicPalette(RandomColor(), hueVariance / 100, satVariance / 100, lightVariance / 100))
-  }, [setNewPaletteState, hueVariance, satVariance, lightVariance]);
+  }, [setNewPaletteState]);
 
   const setLastPalette = useCallback(() => {
     setNewPaletteState(lastPalette);
@@ -139,24 +137,6 @@ function App() {
             <button className="Palette-button" onClick={newTetradic}>tetradic</button>
             <button className="Palette-button" onClick={setLastPalette}>previous</button>
           </span>
-          {/* <div className="RangeControl">
-              <RangeSlider
-                  value={hueRange}
-                  onChange={(e, n) => setHueRange(n as number[])}
-              />
-              <RangeSlider
-                  value={hueVariance}
-                  onChange={(e, n) => setHueVariance(n as number)}
-              />
-              <RangeSlider
-                  value={satVariance}
-                  onChange={(e, n) => setSatVariance(n as number)}
-              />
-              <RangeSlider
-                  value={lightVariance}
-                  onChange={(e, n) => setLightVariance(n as number)}
-              />
-          </div> */}
         </div>
         <Footer />
       </div>

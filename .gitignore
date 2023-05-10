@@ -28,7 +28,6 @@ firebase-error.log*
 package-lock.json
 .firebase/*
 .firebaserc
-firebase.json
 __generated__
 .DS_Store
 .env.local
