@@ -1,10 +1,10 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 
 import PaletteView from './Components/PaletteView';
-import { Palette, AnalogousPalette, MonochromaticPalette, TetradicPalette } from './Palette/Palettes';
-import { RandomColor, HexColor } from './Palette/Color';
+import { Palette, CopiedPalette, AnalogousPalette, MonochromaticPalette, TetradicPalette } from './Palette/Palettes';
+import { RandomColor, HexColor, IsHexColor } from './Palette/Color';
 import { shareStringForPalette, shareUrlForPalette, SHARE_TEXT, SHARE_TITLE } from './urlHandler';
-
+import { BlockPicker } from 'react-color';
 import { Snackbar, SnackbarOrigin } from '@mui/material';
 import './App.css';
 import ExportPopup from './Components/ExportPopup';
@@ -112,6 +112,14 @@ function App() {
 
   const hideExport = useCallback(() => setShowExport(false), []);
 
+  const setTlColor = useCallback((value : string) => {
+    if (IsHexColor(value)) {
+      const newPalette = CopiedPalette(palette);
+      newPalette.tl = HexColor(value);
+      setNewPaletteState(newPalette);
+    }
+  }, [setNewPaletteState, palette]);
+
   return (
     <>
       <ExportPopup show={showExport} onClose={hideExport} imageSrc={imageSrc}/>
@@ -123,6 +131,7 @@ function App() {
         <div className="App-body">
           <div className="Palette-window">
             <PaletteView palette={palette} width={RENDER_WIDTH} height={RENDER_HEIGHT}/>
+            { false ? <BlockPicker color={"#"+palette.tl.asHex()} onChange={(c) => setTlColor(c.hex)}/> : null}
             <Snackbar
               anchorOrigin={SNACKBAR_ORIGIN}
               open={snackOpen}

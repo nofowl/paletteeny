@@ -32,7 +32,7 @@ class Color {
     }
 
     asArray() : number[] {
-        return [this.r, this.g, this.b, this.a]
+        return [this.r, this.g, this.b]
     }
 
     asHex() : string {
@@ -120,7 +120,7 @@ export function RandomColor() : Color {
 }
 
 export function HexColor(hex: string) : Color {
-    var result = /([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})(.*)$/i.exec(hex);
+    var result = /#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})(.*)$/i.exec(hex);
     if (result) {
         let c = new Color(
             parseInt(result[1], 16) / 255,
@@ -130,6 +130,10 @@ export function HexColor(hex: string) : Color {
         return c;
     }
     return RandomColor();
+}
+
+export function IsHexColor(hex: string) : Boolean {
+    return /#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})(.*)$/i.test(hex);
 }
 
 export default Color;
