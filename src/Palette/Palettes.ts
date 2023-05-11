@@ -49,6 +49,20 @@ function colorFrom(
     return c;
 }
 
+// I don't know JS ok
+export function CopiedPalette(
+    palette : Palette)
+    : Palette
+{
+    let p = {} as Palette;
+    p.tl = palette.tl;
+    p.tr = palette.tr;
+    p.bl = palette.bl;
+    p.br = palette.br;
+
+    return p;
+}
+
 export function MonochromaticPalette(
     color : Color,
     satVariance: number = 1,

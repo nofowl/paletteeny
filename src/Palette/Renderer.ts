@@ -110,10 +110,10 @@ function drawScene(gl: WebGLRenderingContext, programInfo: ProgramInfo, buffers:
   gl.useProgram(programInfo.program);
   
   // bind uniforms
-  gl.uniform4fv(programInfo.uniformLocations.tlPos, palette.tl.asArray());
-  gl.uniform4fv(programInfo.uniformLocations.trPos, palette.tr.asArray());
-  gl.uniform4fv(programInfo.uniformLocations.blPos, palette.bl.asArray());
-  gl.uniform4fv(programInfo.uniformLocations.brPos, palette.br.asArray());
+  gl.uniform3fv(programInfo.uniformLocations.tlPos, palette.tl.asArray());
+  gl.uniform3fv(programInfo.uniformLocations.trPos, palette.tr.asArray());
+  gl.uniform3fv(programInfo.uniformLocations.blPos, palette.bl.asArray());
+  gl.uniform3fv(programInfo.uniformLocations.brPos, palette.br.asArray());
   gl.uniform2fv(programInfo.uniformLocations.sizePos, [programInfo.canvasWidth, programInfo.canvasHeight]);
   
   const offset = 0;
@@ -133,15 +133,16 @@ export function renderGL(ctx: WebGLRenderingContext, width: number, height: numb
   const frag = `
     precision highp float;
     uniform vec2 size;
-    uniform vec4 tl;
-    uniform vec4 tr;
-    uniform vec4 bl;
-    uniform vec4 br;
+    uniform vec3 tl;
+    uniform vec3 tr;
+    uniform vec3 bl;
+    uniform vec3 br;
     
     void main() {
-      vec4 top = mix(tl, tr, gl_FragCoord.x / size.x);
-      vec4 bottom = mix(bl, br, gl_FragCoord.x / size.x);
-      gl_FragColor = mix(bottom, top, gl_FragCoord.y / size.y);
+      vec3 top = mix(pow(tl,vec3(2.2)), pow(tr,vec3(2.2)), gl_FragCoord.x / size.x);
+      vec3 bottom = mix(pow(bl,vec3(2.2)), pow(br,vec3(2.2)), gl_FragCoord.x / size.x);
+      vec3 mixed = pow(mix(bottom, top, gl_FragCoord.y / size.y),vec3(1.0/2.2));
+      gl_FragColor = vec4(mixed,1.0);
     }
   `;
   
