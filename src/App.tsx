@@ -4,11 +4,11 @@ import PaletteView from './Components/PaletteView';
 import { Palette, CopiedPalette, AnalogousPalette, MonochromaticPalette, TetradicPalette } from './Palette/Palettes';
 import { RandomColor, HexColor, IsHexColor } from './Palette/Color';
 import { shareStringForPalette, shareUrlForPalette, SHARE_TEXT, SHARE_TITLE } from './urlHandler';
-import { BlockPicker } from 'react-color';
 import { Snackbar, SnackbarOrigin } from '@mui/material';
 import './App.css';
 import ExportPopup from './Components/ExportPopup';
 import TooltipButton from './Components/TooltipButton';
+import ColorButtons from './Components/ColorButtons';
 import Footer from './Components/Footer';
 import Header from './Components/Header';
 import { getImageData } from './Palette/CanvasHelper';
@@ -132,7 +132,6 @@ function App() {
         <div className="App-body">
           <div className="Palette-window">
             <PaletteView palette={palette} width={RENDER_WIDTH} height={RENDER_HEIGHT}/>
-            { false ? <BlockPicker color={"#"+palette.tl.asHex()} onChange={(c) => setTlColor(c.hex)}/> : null}
             <Snackbar
               anchorOrigin={SNACKBAR_ORIGIN}
               open={snackOpen}
@@ -141,10 +140,14 @@ function App() {
               message={snackMessage}
             />
           </div>
+          <ColorButtons palette={palette}/>
           <span className="Palette-buttons">
             <TooltipButton className="TooltipButton Tooltip" tooltip="Mono" onClick={newMonochromatic}/>
+            <TooltipButton className="TooltipButton Tooltip" disabled tooltip="Symmetric"/>
             <TooltipButton className="TooltipButton Tooltip" tooltip="Analogous" onClick={newAnalogous}/>
+            <TooltipButton className="TooltipButton Tooltip" disabled tooltip="Triadic"/>
             <TooltipButton className="TooltipButton Tooltip" tooltip="Tetradic" onClick={newTetradic}/>
+            <TooltipButton className="TooltipButton Tooltip" disabled tooltip="Square"/>
             <TooltipButton className="TooltipButton Tooltip" tooltip="Previous" onClick={setLastPalette}/>
           </span>
         </div>

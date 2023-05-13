@@ -1,6 +1,6 @@
 import React from 'react'
 
-type Props = React.HTMLAttributes<HTMLButtonElement> & {
+type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   tooltip: string;
 };
 
