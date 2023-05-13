@@ -8,6 +8,7 @@ import { BlockPicker } from 'react-color';
 import { Snackbar, SnackbarOrigin } from '@mui/material';
 import './App.css';
 import ExportPopup from './Components/ExportPopup';
+import TooltipButton from './Components/TooltipButton';
 import Footer from './Components/Footer';
 import Header from './Components/Header';
 import { getImageData } from './Palette/CanvasHelper';
@@ -141,10 +142,10 @@ function App() {
             />
           </div>
           <span className="Palette-buttons">
-            <button className="Palette-button" onClick={newMonochromatic}>mono</button>
-            <button className="Palette-button" onClick={newAnalogous}>analogous</button>
-            <button className="Palette-button" onClick={newTetradic}>tetradic</button>
-            <button className="Palette-button" onClick={setLastPalette}>previous</button>
+            <TooltipButton className="TooltipButton Tooltip" tooltip="Mono" onClick={newMonochromatic}/>
+            <TooltipButton className="TooltipButton Tooltip" tooltip="Analogous" onClick={newAnalogous}/>
+            <TooltipButton className="TooltipButton Tooltip" tooltip="Tetradic" onClick={newTetradic}/>
+            <TooltipButton className="TooltipButton Tooltip" tooltip="Previous" onClick={setLastPalette}/>
           </span>
         </div>
         <Footer />

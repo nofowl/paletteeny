@@ -11,9 +11,9 @@ type Props = {
 export default function Header({ onShare, onExportCanvas }: Props) {
   return (
     <div className="App-header">
-      <TooltipButton className="Export-button Tooltip" tooltip="Share" onClick={onShare}><LinkIcon/></TooltipButton>
+      <TooltipButton className="TooltipButton ExportButton Tooltip" tooltip="Share" onClick={onShare}><LinkIcon/></TooltipButton>
       <h1>palet<sup>teeny</sup></h1>
-      <TooltipButton className="Export-button Tooltip" tooltip="Export" onClick={onExportCanvas}><ExportIcon/></TooltipButton>
+      <TooltipButton className="TooltipButton ExportButton Tooltip" tooltip="Export" onClick={onExportCanvas}><ExportIcon/></TooltipButton>
     </div>
   );
 };
