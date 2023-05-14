@@ -27,6 +27,15 @@ button:focus {
   border: 0px solid transparent;
 }
 
+svg {
+  color: #444444;
+  transition: color 0.5s;
+}
+
+svg:hover {
+  color: #666666;
+}
+
 .App a {
   text-decoration: none;
   color: #333333;
@@ -63,30 +72,17 @@ button:focus {
   border: 0px transparent;
   border-radius: 100%;
   padding: 0;
-  background-color: #333333;
-}
-
-.TooltipButton:disabled {
   background-color: #2a2a2a;
 }
 
 .Palette-buttons {
   display: flex;
   gap: 8px;
+  margin-bottom: 8px;;
 }
 
 .ExportButton {
-  background-color: transparent;
   margin-top: auto;
-}
-
-.TooltipButton svg {
-  color: #333333;
-  transition: color 0.5s;
-}
-
-.TooltipButton:hover svg {
-  color: #666666;
 }
 
 .ExportOverlay {
@@ -158,8 +154,42 @@ button:focus {
   border-radius: 0px 16px 16px 0px;
 }
 
-.RangeControl {
-  width: min(320px, min(50vw, 50vh))
+.ColorPicker {
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+}
+
+.ColorPicker .Bubble {
+  margin-bottom: -5%;
+}
+
+.Swatch {
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.SwatchButton {
+  flex: 1;
+  aspect-ratio: 1 / 1;
+  border-radius: 16px;
+}
+
+.HexInput {
+  background-color: #444444;
+  border-radius: 16px;
+  padding: 8px;
+  outline: none;
+  border: none;
+  text-transform: uppercase;
+  color: #a4a4a4;
+  font-size: calc(10px + 1vmin);
+  text-align: center;
 }
 
 .MuiSnackbarContent-message {
@@ -177,44 +207,53 @@ button:focus {
   justify-content: center;
 }
 
-.Tooltip-text {
-  visibility: hidden;
+.Bubble {
   background-color: #333333;
   color: #a4a4a4;
   text-align: center;
-  padding: 5px;
-  border-radius: 6px;
+  padding: 8px;
+  border-radius: 16px;
 
-  /* Position the tooltip text */
+  /* Position the bubble text */
   position: absolute;
-  z-index: 1;
+  z-index: 10;
   bottom: 125%;
+}
+
+/* Tooltip arrow */
+.Bubble::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -8px;
+  border-width: 8px;
+  border-style: solid;
+  border-color: #333333 transparent transparent transparent;
+}
+
+.Tooltip .Bubble {
+  visibility: hidden;
 
   /* Fade in tooltip */
   opacity: 0;
   transition: opacity 0.3s;
 }
 
-/* Tooltip arrow */
-.Tooltip .Tooltip-text::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: #333333 transparent transparent transparent;
-}
-
 /* Show the tooltip text when you mouse over the tooltip container */
-.Tooltip:hover .Tooltip-text {
+.Tooltip:hover .Bubble {
   visibility: visible;
   opacity: 1;
 }
 
-.Tooltip:hover:disabled .Tooltip-text {
+.Tooltip:hover:disabled .Bubble {
   color: #7c7c7c;
   text-decoration: line-through;
 }
 
+.disable-text-selection{
+  -moz-user-select:none; /* firefox */
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE*/
+  user-select: none; /* Standard syntax */
+}

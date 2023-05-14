@@ -1,19 +1,20 @@
 import React,  {useMemo} from 'react';
 import Color from '../Palette/Color';
-import { BlockPicker } from 'react-color';
+import ColorPicker from './ColorPicker';
 import useDetectExternalClick from '../useDetectExternalClick';
 
 type Props = {
   className? : String,
-  color : Color;
+  color : Color,
+  onChange : (c: Color) => void,
 };
 
-export default function Header({ className, color }: Props) {
+export default function ColorButton({ className, color, onChange }: Props) {
 
   const { show, nodeRef, triggerRef } = useDetectExternalClick(false);
 
   const colorStyle = useMemo<React.CSSProperties>(() => ({
-    backgroundColor: '#'+color.asHex()
+    backgroundColor: color.asHex()
   }), [color]);
 
   const pickerStyle = useMemo<React.CSSProperties>(() => ({
@@ -24,7 +25,7 @@ export default function Header({ className, color }: Props) {
   return (
     <div ref={triggerRef} className={"ColorButton " + className} style={colorStyle}>
       <div ref={nodeRef} style={pickerStyle}>
-        <BlockPicker color={"#"+color.asHex()}/>
+        <ColorPicker color={color} onChange={onChange}/>
       </div>
     </div>
   );

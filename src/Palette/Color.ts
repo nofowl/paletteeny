@@ -35,8 +35,9 @@ class Color {
         return [this.r, this.g, this.b]
     }
 
-    asHex() : string {
+    asHex(hash: boolean = true) : string {
         return (
+            (hash ? '#' : '') +
             channelHex(this.r) +
             channelHex(this.g) +
             channelHex(this.b)

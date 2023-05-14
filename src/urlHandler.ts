@@ -5,10 +5,10 @@ type Additional = {[key: string]: string}
 
 function urlForPalette(palette: Palette, additional: Additional = {}) {
     const query = queryString.stringify({
-        tl: palette.tl.asHex(),
-        tr: palette.tr.asHex(),
-        bl: palette.bl.asHex(),
-        br: palette.br.asHex(),
+        tl: palette.tl.asHex(false),
+        tr: palette.tr.asHex(false),
+        bl: palette.bl.asHex(false),
+        br: palette.br.asHex(false),
         ...additional,
     });
 

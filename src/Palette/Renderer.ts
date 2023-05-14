@@ -207,14 +207,14 @@ export function renderText(ctx: CanvasRenderingContext2D, width: number, height:
   // top
   ctx.textBaseline = 'top';
   ctx.textAlign = 'left';
-  ctx.fillText('#' + palette.tl.asHex(), 16, 16);
+  ctx.fillText(palette.tl.asHex(), 16, 16);
   ctx.textAlign = 'right';
-  ctx.fillText('#' + palette.tr.asHex(), width - 16, 16);
+  ctx.fillText(palette.tr.asHex(), width - 16, 16);
   
   // bottom
   ctx.textBaseline = 'bottom';
   ctx.textAlign = 'left';
-  ctx.fillText('#' + palette.bl.asHex(), 16, height - 16);
+  ctx.fillText(palette.bl.asHex(), 16, height - 16);
   ctx.textAlign = 'right';
-  ctx.fillText('#' + palette.br.asHex(), width - 16, height - 16);
+  ctx.fillText(palette.br.asHex(), width - 16, height - 16);
 }

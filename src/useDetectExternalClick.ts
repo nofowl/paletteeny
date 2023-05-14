@@ -7,6 +7,13 @@ export default function useDetectExternalClick(initState : boolean) {
    const [show, setShow] = useState(initState);
 
     const handleClickOutside = (event : MouseEvent) => {
+        // if click is on the open modal, ignore it
+        if(nodeRef.current &&
+        nodeRef.current?.contains(event.target as Node))
+        {
+            return;    
+        }
+
         //if click is on trigger element, toggle modal
         if(triggerRef.current && 
             triggerRef.current?.contains(event.target as Node)) {
@@ -16,6 +23,7 @@ export default function useDetectExternalClick(initState : boolean) {
         //if modal is open and click is outside modal, close it
         if(nodeRef.current && 
         !nodeRef.current?.contains(event.target as Node)) {
+            //console.log("Hiding element!");
             return setShow(false);
         }
    };

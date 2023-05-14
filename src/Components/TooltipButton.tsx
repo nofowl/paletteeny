@@ -7,7 +7,7 @@ type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 export default function TooltipButton({ tooltip, children, ...rest }: Props) {
   return (
     <button {...rest}>
-      <span className="Tooltip-text">{tooltip}</span>
+      <span className="Bubble">{tooltip}</span>
       {children}
     </button>
   );
