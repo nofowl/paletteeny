@@ -1,13 +1,14 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 
 import PaletteView from './Components/PaletteView';
-import { Palette, CopiedPalette, AnalogousPalette, MonochromaticPalette, TetradicPalette } from './Palette/Palettes';
-import { RandomColor, HexColor, IsHexColor } from './Palette/Color';
+import { Palette, AnalogousPalette } from './Palette/Palettes';
+import { RandomColor, HexColor } from './Palette/Color';
 import { shareStringForPalette, shareUrlForPalette, SHARE_TEXT, SHARE_TITLE } from './urlHandler';
-import { BlockPicker } from 'react-color';
 import { Snackbar, SnackbarOrigin } from '@mui/material';
 import './App.css';
 import ExportPopup from './Components/ExportPopup';
+import PaletteButtons from './Components/PaletteButtons'
+import ColorButtons from './Components/ColorButtons';
 import Footer from './Components/Footer';
 import Header from './Components/Header';
 import { getImageData } from './Palette/CanvasHelper';
@@ -20,11 +21,6 @@ const SNACKBAR_ORIGIN: SnackbarOrigin = {
 
 const RENDER_WIDTH = 640;
 const RENDER_HEIGHT = 640;
-
-// To be replaced with configurable values soon
-const hueVariance = 15;
-const satVariance = 50;
-const lightVariance = 50;
 
 function App() {
   // initialise state
@@ -67,22 +63,6 @@ function App() {
     setPaletteState(p);
   }, [palette]);
 
-  const newMonochromatic = useCallback(() => {
-    setNewPaletteState(MonochromaticPalette(RandomColor(), satVariance / 100, lightVariance / 100));
-  }, [setNewPaletteState]);
-
-  const newAnalogous = useCallback(() => {
-    setNewPaletteState(AnalogousPalette(RandomColor(), hueVariance / 100, satVariance / 100, lightVariance / 100));
-  }, [setNewPaletteState]);
-
-  const newTetradic = useCallback(() => {
-    setNewPaletteState(TetradicPalette(RandomColor(), hueVariance / 100, satVariance / 100, lightVariance / 100))
-  }, [setNewPaletteState]);
-
-  const setLastPalette = useCallback(() => {
-    setNewPaletteState(lastPalette);
-  }, [setNewPaletteState, lastPalette]);
-
   const hideSnack = useCallback(() => {
     setSnackOpen(false);
   }, []);
@@ -112,14 +92,6 @@ function App() {
 
   const hideExport = useCallback(() => setShowExport(false), []);
 
-  const setTlColor = useCallback((value : string) => {
-    if (IsHexColor(value)) {
-      const newPalette = CopiedPalette(palette);
-      newPalette.tl = HexColor(value);
-      setNewPaletteState(newPalette);
-    }
-  }, [setNewPaletteState, palette]);
-
   return (
     <>
       <ExportPopup show={showExport} onClose={hideExport} imageSrc={imageSrc}/>
@@ -131,7 +103,6 @@ function App() {
         <div className="App-body">
           <div className="Palette-window">
             <PaletteView palette={palette} width={RENDER_WIDTH} height={RENDER_HEIGHT}/>
-            { false ? <BlockPicker color={"#"+palette.tl.asHex()} onChange={(c) => setTlColor(c.hex)}/> : null}
             <Snackbar
               anchorOrigin={SNACKBAR_ORIGIN}
               open={snackOpen}
@@ -140,12 +111,8 @@ function App() {
               message={snackMessage}
             />
           </div>
-          <span className="Palette-buttons">
-            <button className="Palette-button" onClick={newMonochromatic}>mono</button>
-            <button className="Palette-button" onClick={newAnalogous}>analogous</button>
-            <button className="Palette-button" onClick={newTetradic}>tetradic</button>
-            <button className="Palette-button" onClick={setLastPalette}>previous</button>
-          </span>
+          <ColorButtons palette={palette} changePalette={setNewPaletteState}/>
+          <PaletteButtons setPalette={setNewPaletteState} lastPalette={lastPalette}/>
         </div>
         <Footer />
       </div>

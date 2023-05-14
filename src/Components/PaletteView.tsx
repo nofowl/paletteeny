@@ -13,6 +13,8 @@ interface Props {
 export default function PaletteView({ palette, width, height }: Props) {
   // Use useCallback and useState as useRef doesn't play too well with memoization
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
+  const [asGrad, setAsGrad] = useState<boolean>(false);
+
   const canvasGL = useCallback((node: HTMLCanvasElement | null) => {
     if (node !== null) {
       setCanvas(node);
@@ -33,15 +35,19 @@ export default function PaletteView({ palette, width, height }: Props) {
     }
   }, [canvas]);
 
+  const toggleRender = useCallback(() => {
+    setAsGrad(!asGrad);
+  }, [asGrad, setAsGrad]);
+
   useEffect(() => {
     if (ctxGL) {
-      renderGL(ctxGL, width, height, palette);
+      renderGL(ctxGL, width, height, palette, asGrad);
     }
-  }, [palette, ctxGL, width, height]);
+  }, [palette, ctxGL, width, height, asGrad]);
   
   return (
     <>
-      <canvas className="PaletteView" height={height} width={width} ref={canvasGL}/>
+      <canvas className="PaletteView" height={height} width={width} ref={canvasGL} onClick={toggleRender}/>
     </>
   );
 }

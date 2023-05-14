@@ -121,7 +121,7 @@ function drawScene(gl: WebGLRenderingContext, programInfo: ProgramInfo, buffers:
   gl.drawArrays(gl.TRIANGLE_STRIP, offset, vertexCount);
 }
 
-export function renderGL(ctx: WebGLRenderingContext, width: number, height: number, palette: Palette) {
+export function renderGL(ctx: WebGLRenderingContext, width: number, height: number, palette: Palette, asGrad: boolean = false) {
   const vert = `
     attribute vec4 aVertexPosition;
     
@@ -130,7 +130,7 @@ export function renderGL(ctx: WebGLRenderingContext, width: number, height: numb
     }
   `;
   
-  const frag = `
+  const fragCorner = `
     precision highp float;
     uniform vec2 size;
     uniform vec3 tl;
@@ -146,7 +146,34 @@ export function renderGL(ctx: WebGLRenderingContext, width: number, height: numb
     }
   `;
   
-  const shaderProgram = initShaderProgram(ctx, vert, frag);
+  const fragGrad = `
+  precision highp float;
+  uniform vec2 size;
+  uniform vec3 tl;
+  uniform vec3 tr;
+  uniform vec3 bl;
+  uniform vec3 br;
+  
+  void main() {
+    float x = gl_FragCoord.x / size.x;
+    vec3 col = vec3(1.0);
+    if (x < 1.0 / 3.0)
+    {
+      col = mix(pow(tl,vec3(2.2)), pow(tr,vec3(2.2)), x * 3.0);
+    }
+    else if (x < 2.0 / 3.0)
+    {
+      col = mix(pow(tr,vec3(2.2)), pow(br,vec3(2.2)), x * 3.0 - 1.0);
+    }
+    else
+    {
+      col = mix(pow(br,vec3(2.2)), pow(bl,vec3(2.2)), x * 3.0 - 2.0);
+    }
+    gl_FragColor = vec4(pow(col,vec3(1.0/2.2)),1.0);
+  }
+`;
+
+  const shaderProgram = initShaderProgram(ctx, vert, asGrad ? fragGrad : fragCorner);
   
   if (shaderProgram === null)  return;
   
@@ -180,14 +207,14 @@ export function renderText(ctx: CanvasRenderingContext2D, width: number, height:
   // top
   ctx.textBaseline = 'top';
   ctx.textAlign = 'left';
-  ctx.fillText('#' + palette.tl.asHex(), 16, 16);
+  ctx.fillText(palette.tl.asHex(), 16, 16);
   ctx.textAlign = 'right';
-  ctx.fillText('#' + palette.tr.asHex(), width - 16, 16);
+  ctx.fillText(palette.tr.asHex(), width - 16, 16);
   
   // bottom
   ctx.textBaseline = 'bottom';
   ctx.textAlign = 'left';
-  ctx.fillText('#' + palette.bl.asHex(), 16, height - 16);
+  ctx.fillText(palette.bl.asHex(), 16, height - 16);
   ctx.textAlign = 'right';
-  ctx.fillText('#' + palette.br.asHex(), width - 16, height - 16);
+  ctx.fillText(palette.br.asHex(), width - 16, height - 16);
 }

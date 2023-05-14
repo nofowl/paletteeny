@@ -1,13 +1,13 @@
 import React from 'react'
 
-type Props = React.HTMLAttributes<HTMLButtonElement> & {
+type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   tooltip: string;
 };
 
 export default function TooltipButton({ tooltip, children, ...rest }: Props) {
   return (
     <button {...rest}>
-      <span className="Tooltip-text">{tooltip}</span>
+      <span className="Bubble">{tooltip}</span>
       {children}
     </button>
   );
