@@ -11,7 +11,7 @@ function randomVariance(min: number, max: number) : number {
     return min + (max - min) * Math.random();
 }
 
-function colorFromColor(
+export function colorFromColor(
     color : Color,
     hueVariance: number = 1,
     satVariance: number = 1,
@@ -98,7 +98,69 @@ export function AnalogousPalette(
     return p;
 }
 
+export function SymmetricPalette(
+    color: Color,
+    hueVariance: number = 1,
+    satVariance: number = 1,
+    lightVariance: number = 1)
+    : Palette
+{
+    let p = {} as Palette;
+
+    // generate four lots of colors
+    let h = color.hue(), s = color.saturation(), l = color.lightness();
+
+    // Two pairs of colours
+    p.tl = colorFrom(h, s, l, hueVariance, satVariance, lightVariance);
+    p.tr = colorFrom((h + 180) % 360, s, l, hueVariance, satVariance, lightVariance);
+    p.bl = colorFrom((h + 180) % 360, s, l, hueVariance, satVariance, lightVariance);
+    p.br = colorFrom(h, s, l, hueVariance, satVariance, lightVariance);
+
+    return p;
+}
+
+export function TriadicPalette(
+    color: Color,
+    hueVariance: number = 1,
+    satVariance: number = 1,
+    lightVariance: number = 1)
+    : Palette
+{
+    let p = {} as Palette;
+
+    // generate four lots of colors
+    let h = color.hue(), s = color.saturation(), l = color.lightness();
+
+    // A triangle, and then something close to the first colour
+    p.tl = colorFrom(h, s, l, hueVariance, satVariance, lightVariance);
+    p.tr = colorFrom((h + 140) % 360, s, l, hueVariance, satVariance, lightVariance);
+    p.bl = colorFrom((h + 220) % 360, s, l, hueVariance, satVariance, lightVariance);
+    p.br = colorFrom(h, s, l, hueVariance, satVariance, lightVariance);
+
+    return p;
+}
 export function TetradicPalette(
+    color: Color,
+    hueVariance: number = 1,
+    satVariance: number = 1,
+    lightVariance: number = 1)
+    : Palette
+{
+    let p = {} as Palette;
+
+    // generate four lots of colors
+    let h = color.hue(), s = color.saturation(), l = color.lightness();
+
+    // Similar to square palette, but more rectangular
+    p.tl = colorFrom(h, s, l, hueVariance, satVariance, lightVariance);
+    p.tr = colorFrom((h + 60) % 360, s, l, hueVariance, satVariance, lightVariance);
+    p.bl = colorFrom((h + 180) % 360, s, l, hueVariance, satVariance, lightVariance);
+    p.br = colorFrom((h + 240) % 360, s, l, hueVariance, satVariance, lightVariance);
+
+    return p;
+}
+
+export function SquarePalette(
     color: Color,
     hueVariance: number = 1,
     satVariance: number = 1,

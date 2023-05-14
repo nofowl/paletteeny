@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react';
-import { Palette, AnalogousPalette, MonochromaticPalette, TetradicPalette } from '../Palette/Palettes';
+import React from 'react';
+import { Palette, AnalogousPalette, MonochromaticPalette, TriadicPalette, TetradicPalette, SquarePalette, SymmetricPalette } from '../Palette/Palettes';
 import { RandomColor } from '../Palette/Color';
 import TooltipButton from './TooltipButton'
 
@@ -17,37 +17,20 @@ type Props = {
 };
 
 // To be replaced with configurable values soon
-const hueVariance = 15;
-const satVariance = 50;
-const lightVariance = 50;
+const hueVariance = 0.05;
+const satVariance = 0.40;
+const lightVariance = 0.40;
 
 export default function PaletteButtons({ setPalette, lastPalette }: Props) {
-
-    const newMonochromatic = useCallback(() => {
-        setPalette(MonochromaticPalette(RandomColor(), satVariance / 100, lightVariance / 100));
-    }, [setPalette]);
-
-    const newAnalogous = useCallback(() => {
-        setPalette(AnalogousPalette(RandomColor(), hueVariance / 100, satVariance / 100, lightVariance / 100));
-    }, [setPalette]);
-
-    const newTetradic = useCallback(() => {
-        setPalette(TetradicPalette(RandomColor(), hueVariance / 100, satVariance / 100, lightVariance / 100))
-    }, [setPalette]);
-
-    const setLastPalette = useCallback(() => {
-        setPalette(lastPalette);
-    }, [setPalette, lastPalette]);
-
   return (
     <span className="Palette-buttons">
-        <TooltipButton className="TooltipButton Tooltip" tooltip="Mono" onClick={newMonochromatic}><MonoIcon/></TooltipButton>
-        <TooltipButton className="TooltipButton Tooltip" disabled tooltip="Symmetric"><SymmetricIcon/></TooltipButton>
-        <TooltipButton className="TooltipButton Tooltip" tooltip="Analogous" onClick={newAnalogous}><AnalogousIcon/></TooltipButton>
-        <TooltipButton className="TooltipButton Tooltip" disabled tooltip="Triadic"><TriadicIcon/></TooltipButton>
-        <TooltipButton className="TooltipButton Tooltip" tooltip="Tetradic" onClick={newTetradic}><TetradicIcon/></TooltipButton>
-        <TooltipButton className="TooltipButton Tooltip" disabled tooltip="Square"><SquareIcon/></TooltipButton>
-        <TooltipButton className="TooltipButton Tooltip" tooltip="Previous" onClick={setLastPalette}><PreviousIcon/></TooltipButton>
+        <TooltipButton className="TooltipButton Tooltip" tooltip="Mono" onClick={e=>setPalette(MonochromaticPalette(RandomColor(), satVariance, lightVariance))}><MonoIcon/></TooltipButton>
+        <TooltipButton className="TooltipButton Tooltip" tooltip="Symmetric" onClick={e=>setPalette(SymmetricPalette(RandomColor(), hueVariance, satVariance, lightVariance))}><SymmetricIcon/></TooltipButton>
+        <TooltipButton className="TooltipButton Tooltip" tooltip="Analogous" onClick={e=>setPalette(AnalogousPalette(RandomColor(), 0.2, satVariance, lightVariance))}><AnalogousIcon/></TooltipButton>
+        <TooltipButton className="TooltipButton Tooltip" tooltip="Triadic" onClick={e=>setPalette(TriadicPalette(RandomColor(), hueVariance, satVariance, lightVariance))}><TriadicIcon/></TooltipButton>
+        <TooltipButton className="TooltipButton Tooltip" tooltip="Tetradic" onClick={e=>setPalette(TetradicPalette(RandomColor(), hueVariance, satVariance, lightVariance))}><TetradicIcon/></TooltipButton>
+        <TooltipButton className="TooltipButton Tooltip" tooltip="Square" onClick={e=>setPalette(SquarePalette(RandomColor(), hueVariance, satVariance, lightVariance))}><SquareIcon/></TooltipButton>
+        <TooltipButton className="TooltipButton Tooltip" tooltip="Previous" onClick={e=>setPalette(lastPalette)}><PreviousIcon/></TooltipButton>
     </span>
   );
 };
