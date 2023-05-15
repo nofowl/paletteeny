@@ -67,21 +67,32 @@ function App() {
     setSnackOpen(false);
   }, []);
 
-  const share = useCallback(() => {
+  const handleShare = async () => {
     if (!!window.navigator.share) {
-      // If we have native share functionality, use that
-      window.navigator.share({
+      const response = await fetch(imageData);
+      const blob = await response.blob();
+      const data = {
+        files: [ new File([blob], 'palette.png', {type:blob.type}) ],
         title: SHARE_TITLE,
         text: SHARE_TEXT,
-        url: shareUrlForPalette(palette),
-      });
+        url: shareUrlForPalette(palette)
+      };
+
+      try {
+        if (!navigator.canShare(data)) {
+          console.error("Failed to share data.");
+        }
+        await navigator.share(data);
+      } catch (err) {
+        console.error(err);
+      }
     } else {
       // Else, just do the copy
       navigator.clipboard.writeText(shareStringForPalette(palette));
       setSnackMessage('Link copied to clipboard.');
       setSnackOpen(true);
     }
-  }, [palette]);
+  };
 
   const imageData = useMemo(() => getImageData(RENDER_WIDTH, RENDER_HEIGHT, palette), [palette]);
 
@@ -97,7 +108,7 @@ function App() {
       <ExportPopup show={showExport} onClose={hideExport} imageSrc={imageSrc}/>
       <div className="App">
       <Header
-        onShare={share}
+        onShare={handleShare}
         onExportCanvas={exportCanvas}
       />
         <div className="App-body">
